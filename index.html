@@ -372,25 +372,28 @@ let currentUI = 'th';
 
 function t(key) { return (uiText[currentUI]||uiText['th'])[key]||key; }
 
+// ============ KNOWN VOICE GENDER MAP ============
+// Based on Windows/macOS/Chrome common voice names
+const FEMALE_NAMES = ['female','woman','girl','หญิง','女','hui','yaoyao','xiaoxiao','hanhan','tharathee','achara','premium','kanya','lisa','sarah','emma','samantha','catherine','linda','mary','zira','marka','martha','eva'];
+const MALE_NAMES = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','sarawut','somchai','narong','david','james','mike','john','mark','george','paul','richard'];
+
+function detectGender(name) {
+  const nl = name.toLowerCase();
+  if (FEMALE_NAMES.some(x => nl.includes(x))) return 'female';
+  if (MALE_NAMES.some(x => nl.includes(x))) return 'male';
+  return 'unknown';
+}
+
 // ============ VOICE LOADING ============
 function loadVoices() {
   const allVoices = speechSynthesis.getVoices();
   const container = document.getElementById('voice-cards');
 
-  // Filter by selected language
+  // Filter by selected language prefix (e.g. 'th', 'zh', 'en')
   let voices = allVoices.filter(v => v.lang.startsWith(currentLang.split('-')[0]));
 
-  // If no voices for target language, show all for that lang code
   if (voices.length === 0) {
-    voices = allVoices.filter(v => v.lang.startsWith('th')||v.lang.startsWith('zh')||v.lang.startsWith('en'));
-  }
-
-  // Gender filter
-  if (currentGender === 'female') voices = voices.filter(v => v.name.toLowerCase().includes('female')||v.name.toLowerCase().includes('woman')||v.name.includes('หญิง')||v.name.includes('女')||v.name.includes('Hui')||v.name.includes('Yaoyao')||v.name.includes('Xiaoxiao'));
-  if (currentGender === 'male') voices = voices.filter(v => v.name.toLowerCase().includes('male')||v.name.toLowerCase().includes('man')||v.name.includes('ชาย')||v.name.includes('男')||v.name.includes('Kangkang')||v.name.includes('Yunyang'));
-
-  if (voices.length === 0) {
-    container.innerHTML = `<span style="font-size:12px;color:var(--sub);padding:8px;">${t('noVoice')}</span>`;
+    container.innerHTML = `<span style="font-size:12px;color:var(--sub);padding:8px;">${t('noVoice')}<br><small>Try Chrome or Edge browser for the best voice selection.</small></span>`;
     return;
   }
 
@@ -398,39 +401,48 @@ function loadVoices() {
   const seen = new Set();
   voices = voices.filter(v => { const k = v.name; if (seen.has(k)) return false; seen.add(k); return true; });
 
-  // Detect gender from voice name
-  function guessGender(name) {
-    const f = ['female','woman','girl','หญิง','女','hui','yaoyao','xiaoxiao','hanhan','tharathee','achara','premium','kanya'];
-    const m = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','sarawut','somchai','narong'];
-    const nl = name.toLowerCase();
-    if (f.some(x => nl.includes(x))) return '👩';
-    if (m.some(x => nl.includes(x))) return '👨';
-    return '🎤';
-  }
+  // Tag each voice with gender
+  voices = voices.map(v => ({...v, _gender: detectGender(v.name)}));
 
-  container.innerHTML = voices.map((v,i) => {
-    const gender = guessGender(v.name);
-    return `<div class="voice-card${i===0?' active':''}" data-idx="${i}" onclick="selectVoice(${i},'${v.name.replace(/'/g,"\\'")}')">
-      <span class="v-name">${gender} ${v.name.substring(0,20)}</span>
-      <span class="v-lang">${v.lang}</span>
+  // Gender filter
+  let filtered = voices;
+  if (currentGender === 'female') filtered = voices.filter(v => v._gender === 'female');
+  if (currentGender === 'male') filtered = voices.filter(v => v._gender === 'male');
+
+  // If gender filter returns empty, fall back to all voices for this language
+  if (filtered.length === 0) filtered = voices;
+
+  const genderEmoji = { female: '👩', male: '👨', unknown: '🎤' };
+
+  container.innerHTML = filtered.map((v,i) => {
+    const emoji = genderEmoji[v._gender]||'🎤';
+    const active = (selectedVoice && selectedVoice.name === v.name) ? ' active' : (i===0&&!selectedVoice ? ' active' : '');
+    return `<div class="voice-card${active}" data-name="${v.name.replace(/"/g,'&quot;')}" onclick="selectVoice(this,'${v.name.replace(/'/g,"\\'")}')">
+      <span class="v-name">${emoji} ${v.name.substring(0,20)}</span>
+      <span class="v-lang">${v.lang} · ${v._gender==='female'?'หญิง':v._gender==='male'?'ชาย':'ทั่วไป'}</span>
     </div>`;
   }).join('');
 
-  if (voices.length > 0) {
-    selectedVoice = voices[0];
-    document.querySelectorAll('.voice-card')[0]?.classList.add('active');
+  // Set selected voice if none
+  if (!selectedVoice || !filtered.find(v => v.name === selectedVoice.name)) {
+    selectedVoice = filtered[0];
   }
+
+  console.log(`Voices loaded: ${filtered.length} for ${currentLang}, gender=${currentGender}`);
+  console.log(filtered.map(v => `${v._gender}: ${v.name}`).join('\n'));
 }
 
-function selectVoice(idx, name) {
+function selectVoice(el, name) {
   document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.voice-card')[idx]?.classList.add('active');
-  const voices = speechSynthesis.getVoices().filter(v => v.name === name);
-  if (voices.length > 0) selectedVoice = voices[0];
+  el.classList.add('active');
+  const voices = speechSynthesis.getVoices();
+  selectedVoice = voices.find(v => v.name === name) || voices[0];
+  console.log('Selected:', selectedVoice?.name, 'Lang:', selectedVoice?.lang);
 }
 
 function selectGender(gender) {
   currentGender = gender;
+  selectedVoice = null; // Reset so first matching voice is picked
   document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.gender-btn[data-gender="${gender}"]`)?.classList.add('active');
   loadVoices();
