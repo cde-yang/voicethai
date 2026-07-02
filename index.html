@@ -401,8 +401,8 @@ function loadVoices() {
   const seen = new Set();
   voices = voices.filter(v => { const k = v.name; if (seen.has(k)) return false; seen.add(k); return true; });
 
-  // Tag each voice with gender
-  voices = voices.map(v => ({...v, _gender: detectGender(v.name)}));
+  // Tag each voice with gender (keep original voice object, add _gender)
+  voices = voices.map(v => { v._gender = detectGender(v.name||''); return v; });
 
   // Gender filter
   let filtered = voices;
@@ -527,7 +527,7 @@ function switchUI(lang) {
   document.querySelector('.char-row span:first-child').innerHTML = '<span id="char-num">0</span> ' + (lang==='th'?'ตัวอักษร':lang==='zh'?'字':'chars');
   // Gender buttons
   const gbtns = document.querySelectorAll('.gender-btn');
-  const glabels = {th:[{all:'🎤 ทั้งหมด',f:'👩 เสียงผู้หญิง',m:'👨 เสียงผู้ชาย'},{all:'🎤 全部',f:'👩 女声',m:'👨 男声'},{all:'🎤 All',f:'👩 Female',m:'👨 Male'}]};
+  const glabels = [{all:'🎤 ทั้งหมด',f:'👩 เสียงผู้หญิง',m:'👨 เสียงผู้ชาย'},{all:'🎤 全部',f:'👩 女声',m:'👨 男声'},{all:'🎤 All',f:'👩 Female',m:'👨 Male'}];
   const gi = lang==='zh'?1:lang==='en'?2:0;
   if (gbtns[0]) gbtns[0].innerHTML = `<span class="emoji">🎤</span> ${glabels[gi].all}`;
   if (gbtns[1]) gbtns[1].innerHTML = `<span class="emoji">👩</span> ${glabels[gi].f}`;
