@@ -505,7 +505,6 @@ function generateSpeech() {
 
 // ============ UI SWITCH ============
 function switchUI(lang) {
-  try {
   currentUI = lang;
   // Update lang-switcher buttons via data-lang attribute
   document.querySelectorAll('.lang-btn').forEach(b => {
@@ -571,7 +570,7 @@ function updateTierText(){
   if (proCard) {
     proCard.querySelector('h3').textContent = isZh?'👑 高级版':isEn?'👑 Premium':'👑 พรีเมียม';
     proCard.querySelector('.popular').textContent = isZh?'⭐ 最受欢迎':isEn?'⭐ Most Popular':'⭐ นิยมที่สุด';
-    proCard.querySelector('.period').textContent = isZh?'≈ ¥16 RMB · ≈ $2.2 USD':'≈ ¥16 RMB · ≈ $2.2 USD':'≈ ¥16 RMB · ≈ $2.2 USD';
+    proCard.querySelector('.period').textContent = '≈ ¥16 RMB · ≈ $2.2 USD';
     const proLis = proCard.querySelectorAll('ul li');
     const proT = isZh?['<strong>10,000 字/天</strong>','20+ 高级AI声音','无限下载 MP3','真人般自然','商业用途可用']:
       isEn?['<strong>10,000 chars/day</strong>','20+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Commercial use allowed']:
@@ -586,8 +585,6 @@ function updateFooterText(){
   const footerPs = document.querySelectorAll('.footer p');
   if (footerPs[0]) footerPs[0].innerHTML = isZh?'🎙️ <strong>VoiceThai</strong> — 免费文字转语音，无需注册':isEn?'🎙️ <strong>VoiceThai</strong> — Free Text to Speech, No Registration':'🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร';
   if (footerPs[1]) footerPs[1].textContent = isZh?'支持泰语 · 中文 · 英语 · 越南语 · 印尼语':isEn?'Thai · Chinese · English · Vietnamese · Indonesian':'รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย';
-}
-  } catch(e) { console.error('switchUI error:', e); }
 }
 
 // ============ TOAST ============
