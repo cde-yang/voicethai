@@ -506,14 +506,85 @@ function generateSpeech() {
 // ============ UI SWITCH ============
 function switchUI(lang) {
   currentUI = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn:has(+ [onclick*="${lang}"])`)?.classList.add('active');
-  // Update hero text
+  // Update lang-switcher buttons
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.remove('active');
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${lang}'`)) b.classList.add('active');
+  });
+  // Hero
   document.getElementById('hero-title').innerHTML = t('heroTitle');
   document.getElementById('hero-sub').textContent = t('heroSub');
-  document.getElementById('limit-num').textContent = '500';
+  // Badges
+  const badges = document.querySelectorAll('.badge');
+  if (badges[0]) badges[0].textContent = lang==='th'?'✅ ฟรีตลอดไป':lang==='zh'?'✅ 永久免费':'✅ Free Forever';
+  if (badges[1]) badges[1].textContent = lang==='th'?'🚀 ไม่ต้องสมัคร':lang==='zh'?'🚀 无需注册':'🚀 No Registration';
+  if (badges[2]) badges[2].textContent = lang==='th'?'🌏 หลายภาษา':lang==='zh'?'🌏 多语言':'🌏 Multi-Language';
+  if (badges[3]) badges[3].textContent = lang==='th'?'♂️♀️ เสียงชาย/หญิง':lang==='zh'?'♂️♀️ 男声/女声':'♂️♀️ Male/Female';
+  // Char count
+  document.querySelector('.char-row .free-limit').innerHTML = lang==='th'?'🆓 ฟรี <span id="limit-num">500</span> ตัวอักษร/วัน':
+    lang==='zh'?'🆓 免费 <span id="limit-num">500</span> 字/天':
+    '🆓 Free <span id="limit-num">500</span> chars/day';
+  document.querySelector('.char-row span:first-child').innerHTML = '<span id="char-num">0</span> ' + (lang==='th'?'ตัวอักษร':lang==='zh'?'字':'chars');
+  // Gender buttons
+  const gbtns = document.querySelectorAll('.gender-btn');
+  const glabels = {th:[{all:'🎤 ทั้งหมด',f:'👩 เสียงผู้หญิง',m:'👨 เสียงผู้ชาย'},{all:'🎤 全部',f:'👩 女声',m:'👨 男声'},{all:'🎤 All',f:'👩 Female',m:'👨 Male'}]};
+  const gi = lang==='zh'?1:lang==='en'?2:0;
+  if (gbtns[0]) gbtns[0].innerHTML = `<span class="emoji">🎤</span> ${glabels[gi].all}`;
+  if (gbtns[1]) gbtns[1].innerHTML = `<span class="emoji">👩</span> ${glabels[gi].f}`;
+  if (gbtns[2]) gbtns[2].innerHTML = `<span class="emoji">👨</span> ${glabels[gi].m}`;
+  // Speed
+  document.querySelector('.speed-row').childNodes[0].textContent = lang==='th'?'⏱ ความเร็ว: ':lang==='zh'?'⏱ 速度: ':'⏱ Speed: ';
+  // Generate button
   document.getElementById('btn-generate').querySelector('.btn-text').textContent = t('genBtn');
+  // Textarea placeholder
   document.getElementById('text-input').placeholder = placeholders[currentLang]||placeholders['th-TH'];
+  // Tier cards
+  updateTierText();
+  // Footer
+  updateFooterText();
+  // Audio hint
+  const hint = document.querySelector('#audio-player p');
+  if (hint) hint.innerHTML = lang==='th'?'⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง <a href="#tiers" style="color:var(--accent);">อัปเกรด</a>':
+    lang==='zh'?'⚠️ 免费版使用浏览器语音 — 付费版使用AI高品质语音 <a href="#tiers" style="color:var(--accent);">升级</a>':
+    '⚠️ Free tier uses browser speech — Premium uses high-quality AI voices <a href="#tiers" style="color:var(--accent);">Upgrade</a>';
+}
+
+function updateTierText(){
+  const isZh = currentUI==='zh', isEn = currentUI==='en';
+  // Section title
+  document.querySelector('.tier-section h2').textContent = isZh?'💎 选择适合你的方案':isEn?'💎 Choose Your Plan':'💎 เลือกแผนที่เหมาะกับคุณ';
+  // Free card
+  const freeCard = document.querySelectorAll('.tier-card')[0];
+  if (freeCard) {
+    freeCard.querySelector('h3').textContent = isZh?'🆓 免费':isEn?'🆓 Free':'🆓 ฟรี';
+    freeCard.querySelector('.period').textContent = isZh?'永久':isEn?'Forever':'ตลอดไป';
+    const freeLis = freeCard.querySelectorAll('ul li');
+    const freeT = isZh?['500 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音']:
+      isEn?['500 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices']:
+      ['500 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'];
+    freeLis.forEach((li,i)=>{ if(freeT[i]){ const chk=li.querySelector('.check'); li.innerHTML=(i<4?`<span class="check">✅</span> `:i<6?`<span style="color:#9ca3af;">❌</span> `:``)+freeT[i]; } });
+    freeCard.querySelector('.btn-tier').textContent = isZh?'开始免费使用':isEn?'Start Free':'เริ่มใช้ฟรี';
+  }
+  // Pro card
+  const proCard = document.querySelectorAll('.tier-card')[1];
+  if (proCard) {
+    proCard.querySelector('h3').textContent = isZh?'👑 高级版':isEn?'👑 Premium':'👑 พรีเมียม';
+    proCard.querySelector('.popular').textContent = isZh?'⭐ 最受欢迎':isEn?'⭐ Most Popular':'⭐ นิยมที่สุด';
+    proCard.querySelector('.period').textContent = isZh?'≈ ¥16 RMB · ≈ $2.2 USD':'≈ ¥16 RMB · ≈ $2.2 USD':'≈ ¥16 RMB · ≈ $2.2 USD';
+    const proLis = proCard.querySelectorAll('ul li');
+    const proT = isZh?['<strong>10,000 字/天</strong>','20+ 高级AI声音','无限下载 MP3','真人般自然','商业用途可用']:
+      isEn?['<strong>10,000 chars/day</strong>','20+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Commercial use allowed']:
+      ['<strong>10,000 ตัวอักษร/วัน</strong>','20+ เสียงพรีเมียม','ดาวน์โหลด MP3 ไม่จำกัด','เสียงคุณภาพ HD','ใช้งานเชิงพาณิชย์ได้'];
+    proLis.forEach((li,i)=>{ if(proT[i]) li.innerHTML=`<span class="check">✅</span> ${proT[i]}`; });
+    proCard.querySelector('.btn-tier').textContent = isZh?'立即升级 — ฿79/月':isEn?'Upgrade Now — ฿79/month':'อัปเกรดเลย — ฿79/เดือน';
+  }
+}
+
+function updateFooterText(){
+  const isZh=currentUI==='zh', isEn=currentUI==='en';
+  const footerPs = document.querySelectorAll('.footer p');
+  if (footerPs[0]) footerPs[0].innerHTML = isZh?'🎙️ <strong>VoiceThai</strong> — 免费文字转语音，无需注册':isEn?'🎙️ <strong>VoiceThai</strong> — Free Text to Speech, No Registration':'🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร';
+  if (footerPs[1]) footerPs[1].textContent = isZh?'支持泰语 · 中文 · 英语 · 越南语 · 印尼语':isEn?'Thai · Chinese · English · Vietnamese · Indonesian':'รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย';
 }
 
 // ============ TOAST ============
