@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="แปลงข้อความเป็นเสียงภาษาไทย ฟรี ไม่จำกัด ไม่ต้องสมัคร ใช้ AI สร้างเสียงภาษาไทย ภาษาจีน เหมือนคนพูด รองรับเสียงชาย/หญิง ดาวน์โหลด MP3">
+<meta name="keywords" content="แปลงข้อความเป็นเสียง, text to speech ไทย, TTS ไทย, AI เสียงภาษาไทย, text to speech จีน, 文字转语音, ฟรี">
+<meta property="og:title" content="แปลงข้อความเป็นเสียง ฟรี | AI Text to Speech ไทย จีน อังกฤษ">
+<meta property="og:description" content="ฟรี ไม่จำกัด ไม่ต้องสมัคร เลือกเสียงชาย/หญิง รองรับภาษาไทย จีน อังกฤษ เวียดนาม อินโดนีเซีย">
+<title>แปลงข้อความเป็นเสียง ฟรี | AI TTS หลายภาษา — VoiceThai</title>
+<style>
+:root {
+  --bg: #fafafa;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --sub: #6b7280;
+  --accent: #e63946;
+  --accent2: #1d3557;
+  --gold: #f4a261;
+  --border: #e5e7eb;
+  --free-bg: #ecfdf5;
+  --pro-bg: #fff7ed;
+  --radius: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Sarabun', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 16px; }
+
+/* Header */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; margin-bottom: 8px;
+}
+.logo {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 22px; font-weight: 800; color: var(--accent2);
+  text-decoration: none;
+}
+.logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, #e63946, #1d3557);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.lang-switcher {
+  display: flex; gap: 4px;
+}
+.lang-btn {
+  padding: 5px 10px; border-radius: 16px; border: 1px solid var(--border);
+  background: white; font-size: 11px; cursor: pointer; font-weight: 600;
+  transition: all 0.15s; color: var(--sub);
+}
+.lang-btn:hover, .lang-btn.active { background: var(--accent2); color: white; border-color: var(--accent2); }
+
+/* Hero */
+.hero { text-align: center; padding: 36px 0 28px; }
+.hero h1 { font-size: 30px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+.hero h1 span { color: var(--accent); }
+.hero p { font-size: 16px; color: var(--sub); max-width: 550px; margin: 0 auto; }
+.badges { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.badge { font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.badge-free { background: #ecfdf5; color: #059669; }
+.badge-no-login { background: #eff6ff; color: #2563eb; }
+.badge-multi { background: #fef3c7; color: #d97706; }
+
+/* Main card */
+.main-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 20px;
+}
+
+/* Language tabs */
+.lang-tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.lang-tab {
+  padding: 6px 14px; border-radius: 18px; border: 1px solid var(--border);
+  background: white; font-size: 12px; cursor: pointer; font-weight: 600;
+  transition: all 0.15s; color: var(--sub);
+}
+.lang-tab:hover { border-color: var(--accent); }
+.lang-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* Textarea */
+#text-input {
+  width: 100%; min-height: 120px; padding: 14px 16px; font-size: 16px;
+  border: 2px solid var(--border); border-radius: 12px; resize: vertical;
+  font-family: inherit; line-height: 1.7; transition: border-color 0.2s;
+  background: #fafbfc;
+}
+#text-input:focus { outline: none; border-color: var(--accent); }
+.char-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 12px; color: var(--sub); }
+.char-row .free-limit { color: #059669; font-weight: 600; }
+
+/* Gender picker */
+.gender-row { display: flex; gap: 10px; margin: 14px 0; }
+.gender-btn {
+  flex: 1; padding: 12px; border-radius: 10px; border: 2px solid var(--border);
+  background: white; cursor: pointer; font-size: 14px; font-weight: 600;
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.gender-btn:hover { border-color: var(--accent); }
+.gender-btn.active { border-color: var(--accent); background: #fef2f2; }
+.gender-btn .emoji { font-size: 20px; }
+
+/* Voice cards */
+.voice-cards { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+.voice-card {
+  padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border);
+  background: white; cursor: pointer; font-size: 12px; font-weight: 600;
+  transition: all 0.15s; text-align: center; min-width: 90px;
+}
+.voice-card:hover { border-color: var(--accent); }
+.voice-card.active { border-color: var(--accent); background: #fef2f2; }
+.voice-card .v-name { display: block; }
+.voice-card .v-lang { display: block; font-size: 10px; color: var(--sub); font-weight: 400; margin-top: 2px; }
+
+/* Speed */
+.speed-row { display: flex; align-items: center; gap: 8px; margin: 12px 0; font-size: 13px; color: var(--sub); }
+#speed-slider { width: 100px; }
+
+/* Button */
+.btn-generate {
+  width: 100%; padding: 16px; border: none; border-radius: 12px;
+  font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  background: linear-gradient(135deg, #e63946, #c1121f); color: white;
+  box-shadow: 0 4px 16px rgba(230,57,70,0.3);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-generate:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(230,57,70,0.4); }
+.btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-generate .spinner {
+  width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; display: none;
+}
+.btn-generate.loading .spinner { display: block; }
+.btn-generate.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Quality badge */
+.quality-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 600;
+}
+.quality-hq { background: #fef3c7; color: #92400e; }
+.quality-ai { background: #dcfce7; color: #166534; }
+
+/* Audio player */
+#audio-player { margin-top: 16px; display: none; }
+#audio-player.show { display: block; }
+.audio-box {
+  background: #f8fafc; border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.audio-box audio { flex: 1; min-width: 200px; }
+.btn-download {
+  padding: 8px 18px; border-radius: 8px; border: 1px solid var(--accent);
+  background: white; color: var(--accent); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+}
+.btn-download:hover { background: var(--accent); color: white; }
+
+/* Tiers */
+.tier-section { margin: 32px 0 20px; }
+.tier-section h2 { font-size: 22px; font-weight: 800; margin-bottom: 16px; text-align: center; }
+.tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .tier-grid { grid-template-columns: 1fr; } }
+.tier-card {
+  border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 24px; text-align: center; transition: all 0.2s;
+}
+.tier-card:hover { border-color: var(--accent); }
+.tier-card.pro { border-color: var(--gold); background: var(--pro-bg); position: relative; }
+.tier-card .popular {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: white; padding: 4px 14px;
+  border-radius: 14px; font-size: 11px; font-weight: 700;
+}
+.tier-card h3 { font-size: 16px; color: var(--sub); margin-bottom: 8px; }
+.tier-card .price { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+.tier-card .price small { font-size: 14px; color: var(--sub); font-weight: 400; }
+.tier-card .period { font-size: 12px; color: var(--sub); margin-bottom: 12px; }
+.tier-card ul { text-align: left; margin-bottom: 16px; list-style: none; }
+.tier-card ul li { padding: 6px 0; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.tier-card ul li .check { color: #059669; }
+.tier-card .btn-tier {
+  display: block; width: 100%; padding: 12px; border-radius: 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.btn-free-tier { background: var(--free-bg); color: #059669; border: 2px solid #059669; }
+.btn-pro-tier { background: linear-gradient(135deg, #e63946, #c1121f); color: white; border: none; }
+.btn-pro-tier:hover { opacity: 0.9; }
+
+.footer { text-align: center; padding: 32px 0 24px; font-size: 12px; color: var(--sub); line-height: 1.8; }
+.footer a { color: var(--accent2); text-decoration: none; }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #1a1a2e; color: white; padding: 10px 20px;
+  border-radius: 20px; font-size: 13px; font-weight: 600;
+  z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 22px; }
+  .main-card { padding: 16px; }
+  #text-input { min-height: 100px; font-size: 15px; }
+  .btn-generate { font-size: 16px; padding: 14px; }
+  .gender-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="header">
+    <a href="/" class="logo">
+      <div class="logo-icon">🎙️</div>
+      VoiceThai
+    </a>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="switchUI('th')">🇹🇭 ไทย</button>
+      <button class="lang-btn" onclick="switchUI('zh')">🇨🇳 中文</button>
+      <button class="lang-btn" onclick="switchUI('en')">🇺🇸 EN</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1 id="hero-title">แปลง<span>ข้อความเป็นเสียง</span>หลายภาษา</h1>
+    <p id="hero-sub">ฟรี ไม่จำกัด ไม่ต้องสมัคร เลือกเสียงชาย/หญิง รองรับไทย จีน อังกฤษ เวียดนาม</p>
+    <div class="badges">
+      <span class="badge badge-free">✅ ฟรีตลอดไป</span>
+      <span class="badge badge-no-login">🚀 ไม่ต้องสมัคร</span>
+      <span class="badge badge-multi">🌏 หลายภาษา</span>
+      <span class="badge badge-no-login">♂️♀️ เสียงชาย/หญิง</span>
+    </div>
+  </section>
+
+  <div class="main-card" id="main-card">
+    <!-- Language Tabs -->
+    <div class="lang-tabs" id="lang-tabs">
+      <button class="lang-tab active" data-lang="th-TH">🇹🇭 ไทย</button>
+      <button class="lang-tab" data-lang="zh-CN">🇨🇳 中文</button>
+      <button class="lang-tab" data-lang="en-US">🇺🇸 English</button>
+      <button class="lang-tab" data-lang="vi-VN">🇻🇳 Tiếng Việt</button>
+      <button class="lang-tab" data-lang="id-ID">🇮🇩 Indonesia</button>
+    </div>
+
+    <textarea id="text-input" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
+    <div class="char-row">
+      <span><span id="char-num">0</span> ตัวอักษร</span>
+      <span class="free-limit">🆓 ฟรี <span id="limit-num">500</span> ตัวอักษร/วัน</span>
+    </div>
+
+    <!-- Gender Select -->
+    <div class="gender-row">
+      <button class="gender-btn active" data-gender="all" onclick="selectGender('all')">
+        <span class="emoji">🎤</span> ทั้งหมด
+      </button>
+      <button class="gender-btn" data-gender="female" onclick="selectGender('female')">
+        <span class="emoji">👩</span> เสียงผู้หญิง
+      </button>
+      <button class="gender-btn" data-gender="male" onclick="selectGender('male')">
+        <span class="emoji">👨</span> เสียงผู้ชาย
+      </button>
+    </div>
+
+    <!-- Voice Cards -->
+    <div class="voice-cards" id="voice-cards"></div>
+
+    <!-- Speed -->
+    <div class="speed-row">
+      ⏱ ความเร็ว:
+      <input type="range" id="speed-slider" min="0.5" max="1.8" step="0.1" value="1">
+      <span id="speed-label" style="font-weight:700;">1×</span>
+    </div>
+
+    <button class="btn-generate" id="btn-generate" onclick="generateSpeech()">
+      <span class="spinner"></span>
+      <span class="btn-text">🔊 สร้างเสียง</span>
+    </button>
+
+    <div id="audio-player">
+      <div class="audio-box">
+        <audio id="audio-el" controls></audio>
+        <a class="btn-download" id="btn-download" download="voicethai.mp3">⬇ ดาวน์โหลด MP3</a>
+      </div>
+      <p style="font-size:11px;color:var(--sub);margin-top:6px;">⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง <a href="#tiers" style="color:var(--accent);">อัปเกรด</a></p>
+    </div>
+  </div>
+
+  <!-- Tiers -->
+  <section class="tier-section" id="tiers">
+    <h2>💎 เลือกแผนที่เหมาะกับคุณ</h2>
+    <div class="tier-grid">
+      <div class="tier-card">
+        <h3>🆓 ฟรี</h3>
+        <div class="price">฿0</div>
+        <div class="period">ตลอดไป</div>
+        <ul>
+          <li><span class="check">✅</span> 500 ตัวอักษร/วัน</li>
+          <li><span class="check">✅</span> เสียงชาย/หญิง</li>
+          <li><span class="check">✅</span> 5 ภาษา</li>
+          <li><span class="check">✅</span> ไม่ต้องสมัคร</li>
+          <li style="color:#9ca3af;">❌ ดาวน์โหลด MP3</li>
+          <li style="color:#9ca3af;">❌ เสียง AI คุณภาพสูง</li>
+        </ul>
+        <a href="#main-card" class="btn-tier btn-free-tier">เริ่มใช้ฟรี</a>
+      </div>
+      <div class="tier-card pro">
+        <span class="popular">⭐ นิยมที่สุด</span>
+        <h3>👑 พรีเมียม</h3>
+        <div class="price">฿79<small>/เดือน</small></div>
+        <div class="period">≈ ¥16 RMB · ≈ $2.2 USD</div>
+        <ul>
+          <li><span class="check">✅</span> <strong>10,000 ตัวอักษร/วัน</strong></li>
+          <li><span class="check">✅</span> 20+ เสียง AI คุณภาพสูง</li>
+          <li><span class="check">✅</span> ดาวน์โหลด MP3 ไม่จำกัด</li>
+          <li><span class="check">✅</span> เสียงฟังดูเป็นธรรมชาติ</li>
+          <li><span class="check">✅</span> ใช้งานเชิงพาณิชย์ได้</li>
+        </ul>
+        <a href="#" class="btn-tier btn-pro-tier" onclick="alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nPayment system coming soon!\n\nสนใจติดต่อ: voicethai@proton.me\n\nPayment: TrueMoney / Rabbit Line Pay / PromptPay')">อัปเกรดเลย — ฿79/เดือน</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร</p>
+    <p>รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย</p>
+    <p style="margin-top:6px;">© 2026 VoiceThai · <a href="#">นโยบายความเป็นส่วนตัว</a></p>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+let currentLang = 'th-TH';
+let currentGender = 'all';
+let selectedVoice = null;
+let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
+let lastDate = localStorage.getItem('vt_date')||'';
+const FREE_LIMIT = 500;
+const today = new Date().toDateString();
+if (lastDate !== today) { dailyChars = 0; localStorage.setItem('vt_date', today); localStorage.setItem('vt_chars','0'); }
+
+// Placeholder per language
+const placeholders = {
+  'th-TH': 'พิมพ์ข้อความภาษาไทยที่นี่...\n\nตัวอย่าง: สวัสดีครับ วันนี้เรามาพูดถึงวิธีการทำอาหารไทยง่ายๆ กันนะครับ',
+  'zh-CN': '在这里输入中文...\n\n例如：你好，欢迎使用语音合成工具，今天天气真不错。',
+  'en-US': 'Type your text here...\n\nExample: Hello! Welcome to VoiceThai. This is a free text-to-speech tool.',
+  'vi-VN': 'Nhập văn bản tiếng Việt tại đây...\n\nVí dụ: Xin chào các bạn, hôm nay chúng ta sẽ học cách nấu phở bò.',
+  'id-ID': 'Ketik teks bahasa Indonesia di sini...\n\nContoh: Halo semuanya, selamat datang di alat text-to-speech gratis.',
+};
+
+// UI text per language
+const uiText = {
+  'th': { heroTitle: 'แปลง<span>ข้อความเป็นเสียง</span>หลายภาษา', heroSub: 'ฟรี ไม่จำกัด ไม่ต้องสมัคร เลือกเสียงชาย/หญิง รองรับไทย จีน อังกฤษ เวียดนาม', chars: 'ตัวอักษร', freeLimit: '🆓 ฟรี', perDay: 'ตัวอักษร/วัน', genBtn: '🔊 สร้างเสียง', genderAll: 'ทั้งหมด', genderFemale: 'เสียงผู้หญิง', genderMale: 'เสียงผู้ชาย', speed: 'ความเร็ว', listening: 'กำลังฟังเสียง...', error: '⚠️ เกิดข้อผิดพลาด กรุณาลองใหม่', noVoice: '⚠️ ไม่พบเสียงสำหรับภาษานี้ในเบราว์เซอร์ — กรุณาใช้ Chrome หรือ Edge', emptyText: '⚠️ กรุณาพิมพ์ข้อความก่อน', limitHit: '⚠️ เกินขีดจำกัดฟรีวันนี้ อัปเกรดเป็นพรีเมียมเพื่อใช้งานไม่จำกัด' },
+  'zh': { heroTitle: '多语言<span>文字转语音</span>', heroSub: '免费 · 不限次数 · 无需注册 · 男声/女声可选 · 支持中文、泰语、英语等', chars: '字', freeLimit: '🆓 免费', perDay: '字/天', genBtn: '🔊 生成语音', genderAll: '全部', genderFemale: '女声', genderMale: '男声', speed: '速度', listening: '正在播放...', error: '⚠️ 出错了，请重试', noVoice: '⚠️ 浏览器未找到中文语音 — 请使用 Chrome 或 Edge', emptyText: '⚠️ 请先输入文字', limitHit: '⚠️ 已超出今日免费额度，升级会员即可无限使用' },
+  'en': { heroTitle: '<span>Text to Speech</span> Multi-Language', heroSub: 'Free · Unlimited · No Registration · Male/Female voices · Thai, Chinese, English & more', chars: 'chars', freeLimit: '🆓 Free', perDay: 'chars/day', genBtn: '🔊 Generate Voice', genderAll: 'All', genderFemale: 'Female', genderMale: 'Male', speed: 'Speed', listening: 'Playing audio...', error: '⚠️ Error, please try again', noVoice: '⚠️ No voice found for this language — Please use Chrome or Edge', emptyText: '⚠️ Please enter some text first', limitHit: '⚠️ Daily free limit reached. Upgrade to Premium for unlimited use.' }
+};
+
+let currentUI = 'th';
+
+function t(key) { return (uiText[currentUI]||uiText['th'])[key]||key; }
+
+// ============ VOICE LOADING ============
+function loadVoices() {
+  const allVoices = speechSynthesis.getVoices();
+  const container = document.getElementById('voice-cards');
+
+  // Filter by selected language
+  let voices = allVoices.filter(v => v.lang.startsWith(currentLang.split('-')[0]));
+
+  // If no voices for target language, show all for that lang code
+  if (voices.length === 0) {
+    voices = allVoices.filter(v => v.lang.startsWith('th')||v.lang.startsWith('zh')||v.lang.startsWith('en'));
+  }
+
+  // Gender filter
+  if (currentGender === 'female') voices = voices.filter(v => v.name.toLowerCase().includes('female')||v.name.toLowerCase().includes('woman')||v.name.includes('หญิง')||v.name.includes('女')||v.name.includes('Hui')||v.name.includes('Yaoyao')||v.name.includes('Xiaoxiao'));
+  if (currentGender === 'male') voices = voices.filter(v => v.name.toLowerCase().includes('male')||v.name.toLowerCase().includes('man')||v.name.includes('ชาย')||v.name.includes('男')||v.name.includes('Kangkang')||v.name.includes('Yunyang'));
+
+  if (voices.length === 0) {
+    container.innerHTML = `<span style="font-size:12px;color:var(--sub);padding:8px;">${t('noVoice')}</span>`;
+    return;
+  }
+
+  // Deduplicate by name
+  const seen = new Set();
+  voices = voices.filter(v => { const k = v.name; if (seen.has(k)) return false; seen.add(k); return true; });
+
+  // Detect gender from voice name
+  function guessGender(name) {
+    const f = ['female','woman','girl','หญิง','女','hui','yaoyao','xiaoxiao','hanhan','tharathee','achara','premium','kanya'];
+    const m = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','sarawut','somchai','narong'];
+    const nl = name.toLowerCase();
+    if (f.some(x => nl.includes(x))) return '👩';
+    if (m.some(x => nl.includes(x))) return '👨';
+    return '🎤';
+  }
+
+  container.innerHTML = voices.map((v,i) => {
+    const gender = guessGender(v.name);
+    return `<div class="voice-card${i===0?' active':''}" data-idx="${i}" onclick="selectVoice(${i},'${v.name.replace(/'/g,"\\'")}')">
+      <span class="v-name">${gender} ${v.name.substring(0,20)}</span>
+      <span class="v-lang">${v.lang}</span>
+    </div>`;
+  }).join('');
+
+  if (voices.length > 0) {
+    selectedVoice = voices[0];
+    document.querySelectorAll('.voice-card')[0]?.classList.add('active');
+  }
+}
+
+function selectVoice(idx, name) {
+  document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.voice-card')[idx]?.classList.add('active');
+  const voices = speechSynthesis.getVoices().filter(v => v.name === name);
+  if (voices.length > 0) selectedVoice = voices[0];
+}
+
+function selectGender(gender) {
+  currentGender = gender;
+  document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.gender-btn[data-gender="${gender}"]`)?.classList.add('active');
+  loadVoices();
+}
+
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+// ============ LANG TABS ============
+document.querySelectorAll('.lang-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+    currentLang = this.dataset.lang;
+    document.getElementById('text-input').placeholder = placeholders[currentLang]||placeholders['th-TH'];
+    loadVoices();
+  });
+});
+
+// ============ SPEED ============
+document.getElementById('speed-slider').addEventListener('input', function() {
+  document.getElementById('speed-label').textContent = this.value + '×';
+});
+
+// ============ CHAR COUNT ============
+document.getElementById('text-input').addEventListener('input', function() {
+  document.getElementById('char-num').textContent = this.value.length;
+});
+
+// ============ GENERATE ============
+function generateSpeech() {
+  const text = document.getElementById('text-input').value.trim();
+  if (!text) { showToast(t('emptyText')); return; }
+  if (dailyChars + text.length > FREE_LIMIT) { showToast(t('limitHit')); return; }
+
+  const btn = document.getElementById('btn-generate');
+  btn.classList.add('loading'); btn.disabled = true;
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = currentLang;
+  utterance.rate = parseFloat(document.getElementById('speed-slider').value);
+  utterance.pitch = 1;
+  if (selectedVoice) utterance.voice = selectedVoice;
+
+  utterance.onend = function() {
+    btn.classList.remove('loading'); btn.disabled = false;
+    dailyChars += text.length;
+    localStorage.setItem('vt_chars', dailyChars.toString());
+    document.getElementById('audio-player').classList.add('show');
+  };
+  utterance.onerror = function(e) {
+    btn.classList.remove('loading'); btn.disabled = false;
+    if (e.error !== 'canceled') showToast(t('error'));
+  };
+
+  speechSynthesis.speak(utterance);
+  showToast('🔊 ' + t('listening'));
+}
+
+// ============ UI SWITCH ============
+function switchUI(lang) {
+  currentUI = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn:has(+ [onclick*="${lang}"])`)?.classList.add('active');
+  // Update hero text
+  document.getElementById('hero-title').innerHTML = t('heroTitle');
+  document.getElementById('hero-sub').textContent = t('heroSub');
+  document.getElementById('limit-num').textContent = '500';
+  document.getElementById('btn-generate').querySelector('.btn-text').textContent = t('genBtn');
+  document.getElementById('text-input').placeholder = placeholders[currentLang]||placeholders['th-TH'];
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg; toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ============ KEYBOARD ============
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey||e.metaKey) && e.key==='Enter') { e.preventDefault(); generateSpeech(); }
+});
+</script>
+</body>
+</html>
