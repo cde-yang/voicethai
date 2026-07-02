@@ -257,7 +257,7 @@ body {
     <textarea id="text-input" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
     <div class="char-row">
       <span><span id="char-num">0</span> ตัวอักษร</span>
-      <span class="free-limit">🆓 ฟรี <span id="limit-num">500</span> ตัวอักษร/วัน</span>
+      <span class="free-limit">🆓 ฟรี <span id="limit-num">5000</span> ตัวอักษร/วัน</span>
     </div>
 
     <!-- Gender Select -->
@@ -306,7 +306,7 @@ body {
         <div class="price">฿0</div>
         <div class="period">ตลอดไป</div>
         <ul>
-          <li><span class="check">✅</span> 500 ตัวอักษร/วัน</li>
+          <li><span class="check">✅</span> 5000 ตัวอักษร/วัน</li>
           <li><span class="check">✅</span> เสียงชาย/หญิง</li>
           <li><span class="check">✅</span> 5 ภาษา</li>
           <li><span class="check">✅</span> ไม่ต้องสมัคร</li>
@@ -348,7 +348,7 @@ let currentGender = 'all';
 let selectedVoice = null;
 let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
 let lastDate = localStorage.getItem('vt_date')||'';
-const FREE_LIMIT = 500;
+const FREE_LIMIT = 5000; // TESTING — revert to 500 before launch
 const today = new Date().toDateString();
 if (lastDate !== today) { dailyChars = 0; localStorage.setItem('vt_date', today); localStorage.setItem('vt_chars','0'); }
 
@@ -521,9 +521,9 @@ function switchUI(lang) {
   if (badges[2]) badges[2].textContent = lang==='th'?'🌏 หลายภาษา':lang==='zh'?'🌏 多语言':'🌏 Multi-Language';
   if (badges[3]) badges[3].textContent = lang==='th'?'♂️♀️ เสียงชาย/หญิง':lang==='zh'?'♂️♀️ 男声/女声':'♂️♀️ Male/Female';
   // Char count
-  document.querySelector('.char-row .free-limit').innerHTML = lang==='th'?'🆓 ฟรี <span id="limit-num">500</span> ตัวอักษร/วัน':
-    lang==='zh'?'🆓 免费 <span id="limit-num">500</span> 字/天':
-    '🆓 Free <span id="limit-num">500</span> chars/day';
+  document.querySelector('.char-row .free-limit').innerHTML = lang==='th'?'🆓 ฟรี <span id="limit-num">5000</span> ตัวอักษร/วัน':
+    lang==='zh'?'🆓 免费 <span id="limit-num">5000</span> 字/天':
+    '🆓 Free <span id="limit-num">5000</span> chars/day';
   document.querySelector('.char-row span:first-child').innerHTML = '<span id="char-num">0</span> ' + (lang==='th'?'ตัวอักษร':lang==='zh'?'字':'chars');
   // Gender buttons
   const gbtns = document.querySelectorAll('.gender-btn');
@@ -559,9 +559,9 @@ function updateTierText(){
     freeCard.querySelector('h3').textContent = isZh?'🆓 免费':isEn?'🆓 Free':'🆓 ฟรี';
     freeCard.querySelector('.period').textContent = isZh?'永久':isEn?'Forever':'ตลอดไป';
     const freeLis = freeCard.querySelectorAll('ul li');
-    const freeT = isZh?['500 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音']:
-      isEn?['500 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices']:
-      ['500 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'];
+    const freeT = isZh?['5000 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音']:
+      isEn?['5000 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices']:
+      ['5000 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'];
     freeLis.forEach((li,i)=>{ if(freeT[i]){ const chk=li.querySelector('.check'); li.innerHTML=(i<4?`<span class="check">✅</span> `:i<6?`<span style="color:#9ca3af;">❌</span> `:``)+freeT[i]; } });
     freeCard.querySelector('.btn-tier').textContent = isZh?'开始免费使用':isEn?'Start Free':'เริ่มใช้ฟรี';
   }
