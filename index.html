@@ -227,9 +227,9 @@ body {
       VoiceThai
     </a>
     <div class="lang-switcher">
-      <button class="lang-btn active" onclick="switchUI('th')">🇹🇭 ไทย</button>
-      <button class="lang-btn" onclick="switchUI('zh')">🇨🇳 中文</button>
-      <button class="lang-btn" onclick="switchUI('en')">🇺🇸 EN</button>
+      <button class="lang-btn active" data-lang="th" onclick="switchUI('th')">🇹🇭 ไทย</button>
+      <button class="lang-btn" data-lang="zh" onclick="switchUI('zh')">🇨🇳 中文</button>
+      <button class="lang-btn" data-lang="en" onclick="switchUI('en')">🇺🇸 EN</button>
     </div>
   </header>
 
@@ -505,11 +505,12 @@ function generateSpeech() {
 
 // ============ UI SWITCH ============
 function switchUI(lang) {
+  try {
   currentUI = lang;
-  // Update lang-switcher buttons
+  // Update lang-switcher buttons via data-lang attribute
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.remove('active');
-    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${lang}'`)) b.classList.add('active');
+    if (b.getAttribute('data-lang') === lang) b.classList.add('active');
   });
   // Hero
   document.getElementById('hero-title').innerHTML = t('heroTitle');
@@ -585,6 +586,8 @@ function updateFooterText(){
   const footerPs = document.querySelectorAll('.footer p');
   if (footerPs[0]) footerPs[0].innerHTML = isZh?'🎙️ <strong>VoiceThai</strong> — 免费文字转语音，无需注册':isEn?'🎙️ <strong>VoiceThai</strong> — Free Text to Speech, No Registration':'🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร';
   if (footerPs[1]) footerPs[1].textContent = isZh?'支持泰语 · 中文 · 英语 · 越南语 · 印尼语':isEn?'Thai · Chinese · English · Vietnamese · Indonesian':'รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย';
+}
+  } catch(e) { console.error('switchUI error:', e); }
 }
 
 // ============ TOAST ============
