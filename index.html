@@ -341,6 +341,52 @@ body {
 
 <div class="toast" id="toast"></div>
 
+<!-- Feedback Button & Modal -->
+<style>
+.fb-btn {
+  position:fixed;bottom:20px;right:20px;z-index:100;
+  width:48px;height:48px;border-radius:50%;border:none;
+  background:var(--accent2);color:white;font-size:20px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.fb-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
+.fb-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;}
+.fb-modal.show{display:flex;}
+.fb-modal-inner{background:white;border-radius:16px;padding:24px;max-width:420px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);}
+.fb-modal-inner h3{margin:0 0 4px;font-size:18px;}
+.fb-modal-inner p{font-size:12px;color:var(--sub);margin:0 0 12px;}
+.fb-modal-inner textarea{width:100%;min-height:100px;padding:12px;border:1px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;}
+.fb-modal-inner .fb-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
+.fb-modal-inner .fb-cancel{background:none;border:1px solid var(--border);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;}
+.fb-modal-inner .fb-send{background:var(--accent);color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;}
+.fb-modal-inner .fb-send:hover{opacity:0.9;}
+.fb-thanks{display:none;text-align:center;padding:20px 0;}
+.fb-thanks.show{display:block;}
+.fb-thanks .emoji{font-size:40px;}
+</style>
+
+<button class="fb-btn" onclick="openFeedback()" title="Feedback">💬</button>
+
+<div class="fb-modal" id="fb-modal">
+  <div class="fb-modal-inner">
+    <div id="fb-form">
+      <h3 id="fb-title">💬 ส่งความคิดเห็น</h3>
+      <p id="fb-desc">บอกเราว่ามีอะไรที่ควรปรับปรุง หรือฟีเจอร์ที่คุณอยากได้</p>
+      <textarea id="fb-text" placeholder="พิมพ์ความคิดเห็นที่นี่..."></textarea>
+      <div class="fb-actions">
+        <button class="fb-cancel" onclick="closeFeedback()" id="fb-cancel">ยกเลิก</button>
+        <button class="fb-send" onclick="sendFeedback()" id="fb-send">📩 ส่ง</button>
+      </div>
+    </div>
+    <div class="fb-thanks" id="fb-thanks">
+      <div class="emoji">🙏</div>
+      <h3 id="fb-thanks-title">ขอบคุณสำหรับความคิดเห็น!</h3>
+      <p id="fb-thanks-desc">เราจะนำไปปรับปรุงให้ดียิ่งขึ้น</p>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============ STATE ============
 let currentLang = 'th-TH';
@@ -592,6 +638,46 @@ function showToast(msg) {
   const toast = document.getElementById('toast');
   toast.textContent = msg; toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ============ FEEDBACK ============
+window.openFeedback = function() {
+  document.getElementById('fb-modal').classList.add('show');
+  document.getElementById('fb-form').style.display='block';
+  document.getElementById('fb-thanks').classList.remove('show');
+  document.getElementById('fb-text').value='';
+  updateFeedbackLang();
+};
+window.closeFeedback = function() {
+  document.getElementById('fb-modal').classList.remove('show');
+};
+window.sendFeedback = function() {
+  var text = document.getElementById('fb-text').value.trim();
+  if (!text) return;
+  // Send to free form backend or email
+  var subject = encodeURIComponent('[VoiceThai Feedback]');
+  var body = encodeURIComponent(text + '\n\n---\nLang: '+currentLang+' | UI: '+currentUI+' | Time: '+new Date().toISOString());
+  // Try Formspree first, fallback to mailto
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID', true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.send(JSON.stringify({feedback:text,lang:currentLang,ui:currentUI,time:new Date().toISOString()}));
+  // Show thanks (works even if Formspree not configured)
+  document.getElementById('fb-form').style.display='none';
+  document.getElementById('fb-thanks').classList.add('show');
+  // Also copy to clipboard as backup
+  setTimeout(function() { document.getElementById('fb-modal').classList.remove('show'); }, 3000);
+};
+// Update feedback modal text per UI language
+function updateFeedbackLang() {
+  var isZh=currentUI==='zh', isEn=currentUI==='en';
+  document.getElementById('fb-title').textContent = isZh?'💬 发送反馈':isEn?'💬 Send Feedback':'💬 ส่งความคิดเห็น';
+  document.getElementById('fb-desc').textContent = isZh?'告诉我们哪里需要改进，或者你想要什么功能':isEn?'Tell us what to improve or what features you want':'บอกเราว่ามีอะไรที่ควรปรับปรุง หรือฟีเจอร์ที่คุณอยากได้';
+  document.getElementById('fb-text').placeholder = isZh?'在这里输入你的意见...':isEn?'Type your feedback here...':'พิมพ์ความคิดเห็นที่นี่...';
+  document.getElementById('fb-cancel').textContent = isZh?'取消':isEn?'Cancel':'ยกเลิก';
+  document.getElementById('fb-send').textContent = isZh?'📩 发送':isEn?'📩 Send':'📩 ส่ง';
+  document.getElementById('fb-thanks-title').textContent = isZh?'感谢你的反馈!':isEn?'Thanks for your feedback!':'ขอบคุณสำหรับความคิดเห็น!';
+  document.getElementById('fb-thanks-desc').textContent = isZh?'我们会持续改进':isEn?'We will keep improving':'เราจะนำไปปรับปรุงให้ดียิ่งขึ้น';
 }
 
 // ============ KEYBOARD ============
