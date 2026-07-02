@@ -322,7 +322,7 @@ body {
         <div class="period">≈ ¥20 RMB · ≈ $2.75 USD</div>
         <ul>
           <li><span class="check">✅</span> <strong>5,000 ตัวอักษร/วัน</strong></li>
-          <li><span class="check">✅</span> 20+ เสียง AI คุณภาพสูง</li>
+          <li><span class="check">✅</span> 10+ เสียง AI คุณภาพสูง</li>
           <li><span class="check">✅</span> ดาวน์โหลด MP3 ไม่จำกัด</li>
           <li><span class="check">✅</span> เสียงฟังดูเป็นธรรมชาติ</li>
           <li><span class="check">✅</span> ใช้งานเชิงพาณิชย์ได้</li>
@@ -511,6 +511,7 @@ document.querySelectorAll('.lang-tab').forEach(tab => {
 // ============ SPEED ============
 document.getElementById('speed-slider').addEventListener('input', function() {
   document.getElementById('speed-label').textContent = this.value + '×';
+  document.getElementById('speed-val') && (document.getElementById('speed-val').textContent = this.value + '×');
 });
 
 // ============ CHAR COUNT ============
@@ -579,7 +580,7 @@ function switchUI(lang) {
   if (gbtns[1]) gbtns[1].innerHTML = `<span class="emoji">👩</span> ${glabels[gi].f}`;
   if (gbtns[2]) gbtns[2].innerHTML = `<span class="emoji">👨</span> ${glabels[gi].m}`;
   // Speed
-  document.querySelector('.speed-row').childNodes[0].textContent = lang==='th'?'⏱ ความเร็ว: ':lang==='zh'?'⏱ 速度: ':'⏱ Speed: ';
+  var speedLabel = document.getElementById("speed-label-text"); if (speedLabel) speedLabel.textContent = lang==="th"?"⏱ ความเร็ว: ":lang==="zh"?"⏱ 速度: ":"⏱ Speed: "; else document.querySelector(".speed-row").childNodes[0].textContent = lang==="th"?"⏱ ความเร็ว: ":lang==="zh"?"⏱ 速度: ":"⏱ Speed: ";
   // Generate button
   document.getElementById('btn-generate').querySelector('.btn-text').textContent = t('genBtn');
   // Textarea placeholder
@@ -656,18 +657,16 @@ window.closeFeedback = function() {
 window.sendFeedback = function() {
   var text = document.getElementById('fb-text').value.trim();
   if (!text) return;
-  // Send to free form backend or email
-  var subject = encodeURIComponent('[VoiceThai Feedback]');
-  var body = encodeURIComponent(text + '\n\n---\nLang: '+currentLang+' | UI: '+currentUI+' | Time: '+new Date().toISOString());
-  // Try Formspree first, fallback to mailto
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID', true);
-  xhr.setRequestHeader('Content-Type','application/json');
-  xhr.send(JSON.stringify({feedback:text,lang:currentLang,ui:currentUI,time:new Date().toISOString()}));
-  // Show thanks (works even if Formspree not configured)
+  // Save to localStorage as backup
+  var fbList = JSON.parse(localStorage.getItem('vt_feedback')||'[]');
+  fbList.push({text:text,lang:currentLang,ui:currentUI,time:new Date().toISOString()});
+  localStorage.setItem('vt_feedback', JSON.stringify(fbList));
+  // Open email client as primary method
+  var body = encodeURIComponent(text+'\n\n---\nLanguage: '+currentLang+' | UI: '+currentUI+' | Time: '+new Date().toISOString());
+  window.open('mailto:voicethai@proton.me?subject=%5BVoiceThai%20Feedback%5D&body='+body, '_blank');
+  // Show thanks
   document.getElementById('fb-form').style.display='none';
   document.getElementById('fb-thanks').classList.add('show');
-  // Also copy to clipboard as backup
   setTimeout(function() { document.getElementById('fb-modal').classList.remove('show'); }, 3000);
 };
 // Update feedback modal text per UI language
