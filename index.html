@@ -345,12 +345,12 @@ body {
 <style>
 .fb-btn {
   position:fixed;bottom:20px;right:20px;z-index:100;
-  width:48px;height:48px;border-radius:50%;border:none;
-  background:var(--accent2);color:white;font-size:20px;cursor:pointer;
+  padding:10px 18px;border-radius:24px;border:none;
+  background:var(--accent2);color:white;font-size:14px;font-weight:600;cursor:pointer;
   box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:all 0.2s;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
 }
-.fb-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
+.fb-btn:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
 .fb-modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;}
 .fb-modal.show{display:flex;}
 .fb-modal-inner{background:white;border-radius:16px;padding:24px;max-width:420px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);}
@@ -366,7 +366,7 @@ body {
 .fb-thanks .emoji{font-size:40px;}
 </style>
 
-<button class="fb-btn" onclick="openFeedback()" title="Feedback">💬</button>
+<button class="fb-btn" onclick="openFeedback()" id="fb-btn" title="Feedback">💬 ความคิดเห็น</button>
 
 <div class="fb-modal" id="fb-modal">
   <div class="fb-modal-inner">
@@ -588,6 +588,8 @@ function switchUI(lang) {
   updateTierText();
   // Footer
   updateFooterText();
+  // Feedback button
+  updateFeedbackLang();
   // Audio hint
   const hint = document.querySelector('#audio-player p');
   if (hint) hint.innerHTML = lang==='th'?'⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง <a href="#tiers" style="color:var(--accent);">อัปเกรด</a>':
@@ -678,7 +680,11 @@ function updateFeedbackLang() {
   document.getElementById('fb-send').textContent = isZh?'📩 发送':isEn?'📩 Send':'📩 ส่ง';
   document.getElementById('fb-thanks-title').textContent = isZh?'感谢你的反馈!':isEn?'Thanks for your feedback!':'ขอบคุณสำหรับความคิดเห็น!';
   document.getElementById('fb-thanks-desc').textContent = isZh?'我们会持续改进':isEn?'We will keep improving':'เราจะนำไปปรับปรุงให้ดียิ่งขึ้น';
+  // Update floating button
+  document.getElementById('fb-btn').innerHTML = isZh?'💬 意见反馈':isEn?'💬 Feedback':'💬 ความคิดเห็น';
 }
+// Call on page load
+updateFeedbackLang();
 
 // ============ KEYBOARD ============
 document.addEventListener('keydown', function(e) {
