@@ -319,7 +319,7 @@ body {
         <span class="popular">⭐ นิยมที่สุด</span>
         <h3>👑 พรีเมียม</h3>
         <div class="price">฿99<small>/เดือน</small></div>
-        <div class="period">≈ ¥16 RMB · ≈ $2.2 USD</div>
+        <div class="period">≈ ¥20 RMB · ≈ $2.75 USD</div>
         <ul>
           <li><span class="check">✅</span> <strong>5,000 ตัวอักษร/วัน</strong></li>
           <li><span class="check">✅</span> 20+ เสียง AI คุณภาพสูง</li>
@@ -618,7 +618,7 @@ function updateTierText(){
   if (proCard) {
     proCard.querySelector('h3').textContent = isZh?'👑 高级版':isEn?'👑 Premium':'👑 พรีเมียม';
     proCard.querySelector('.popular').textContent = isZh?'⭐ 最受欢迎':isEn?'⭐ Most Popular':'⭐ นิยมที่สุด';
-    proCard.querySelector('.period').textContent = '≈ ¥16 RMB · ≈ $2.2 USD';
+    proCard.querySelector('.period').textContent = '≈ ¥20 RMB · ≈ $2.75 USD';
     const proLis = proCard.querySelectorAll('ul li');
     const proT = isZh?['<strong>5,000 字/天</strong>','10+ 高级AI声音','无限下载 MP3','真人般自然','商业用途可用']:
       isEn?['<strong>5,000 chars/day</strong>','10+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Commercial use allowed']:
