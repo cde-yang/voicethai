@@ -287,6 +287,7 @@ body {
 
     <!-- Voice Cards -->
     <div class="voice-cards" id="voice-cards"></div>
+    <div style="font-size:11px;color:var(--sub);margin-top:2px;" id="voice-debug"></div>
 
     <!-- Speed -->
     <div class="speed-row">
@@ -487,8 +488,8 @@ function loadVoices() {
     selectedVoice = filtered[0];
   }
 
-  console.log(`Voices loaded: ${filtered.length} for ${currentLang}, gender=${currentGender}`);
-  console.log(filtered.map(v => `${v._gender}: ${v.name}`).join('\n'));
+  var dbg=document.getElementById('voice-debug');
+  if(dbg){var maleC=voices.filter(function(v){return v._gender==='male'}).length;var femaleC=voices.filter(function(v){return v._gender==='female'}).length;var unkC=voices.filter(function(v){return v._gender==='unknown'}).length;dbg.textContent='🎤 '+voices.length+' voices total: 👨'+maleC+' male · 👩'+femaleC+' female · ?'+unkC+' unknown | Filtering: '+(currentGender==='all'?'all':currentGender)}
 }
 
 function selectVoice(el, name) {
