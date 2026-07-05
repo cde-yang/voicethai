@@ -171,7 +171,7 @@ body {
 /* Tiers */
 .tier-section { margin: 48px 0 24px; }
 .tier-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 24px; text-align: center; letter-spacing: -0.3px; }
-.tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
 @media (max-width: 640px) { .tier-grid { grid-template-columns: 1fr; } }
 .tier-card {
   border: 1.5px solid var(--border); border-radius: var(--radius); padding: 32px;
@@ -283,7 +283,7 @@ body {
     <textarea id="text-input" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
     <div class="char-row">
       <span><span id="char-num">0</span> ตัวอักษร</span>
-      <span class="free-limit">🆓 ฟรี <span id="limit-num">1500</span> ตัวอักษร/วัน</span>
+      <span class="free-limit">🆓 ฟรี <span id="limit-num">2000</span> ตัวอักษร/วัน</span>
     </div>
 
     <!-- Gender Select -->
@@ -333,7 +333,7 @@ body {
       </details>
       <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
         <summary style="font-weight:600;font-size:14px;color:var(--text);">ต้องสมัครสมาชิกก่อนใช้หรือไม่?</summary>
-        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">ไม่ต้อง! เปิดเว็บแล้วใช้ได้ทันที ไม่ต้องสมัคร ไม่ต้องล็อกอิน ฟรี 1500 ตัวอักษรต่อวัน</p>
+        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">ไม่ต้อง! เปิดเว็บแล้วใช้ได้ทันที ไม่ต้องสมัคร ไม่ต้องล็อกอิน ฟรี 2000 ตัวอักษรต่อวัน</p>
       </details>
       <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
         <summary style="font-weight:600;font-size:14px;color:var(--text);">รองรับภาษาอะไรบ้าง?</summary>
@@ -359,7 +359,7 @@ body {
         <div class="price">฿0</div>
         <div class="period">ตลอดไป</div>
         <ul>
-          <li><span class="check">✅</span> 1500 ตัวอักษร/วัน</li>
+          <li><span class="check">✅</span> 2000 ตัวอักษร/วัน</li>
           <li><span class="check">✅</span> เสียงชาย/หญิง</li>
           <li><span class="check">✅</span> 5 ภาษา</li>
           <li><span class="check">✅</span> ไม่ต้องสมัคร</li>
@@ -381,6 +381,20 @@ body {
           <li><span class="check">✅</span> ใช้งานเชิงพาณิชย์ได้</li>
         </ul>
         <a href="#" class="btn-tier btn-pro-tier" onclick="alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nPayment system coming soon!\n\nสนใจติดต่อ: voicethai@proton.me\n\nPayment: TrueMoney / Rabbit Line Pay / PromptPay')">อัปเกรดเลย — ฿99/เดือน</a>
+      </div>
+      <!-- Max Tier -->
+      <div class="tier-card">
+        <h3>🚀 แม็กซ์</h3>
+        <div class="price">฿179<small>/เดือน</small></div>
+        <div class="period">≈ ¥37 RMB · ≈ $5 USD</div>
+        <ul>
+          <li><span class="check">✅</span> <strong>10,000 ตัวอักษร/วัน</strong></li>
+          <li><span class="check">✅</span> 30+ เสียง AI คุณภาพสูง</li>
+          <li><span class="check">✅</span> ดาวน์โหลด MP3 ไม่จำกัด</li>
+          <li><span class="check">✅</span> เสียงฟังดูเป็นธรรมชาติ</li>
+          <li><span class="check">✅</span> ประมวลผลเร็วที่สุด</li>
+        </ul>
+        <a href="#" class="btn-tier btn-pro-tier" onclick="alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nPayment system coming soon!')">อัปเกรดเลย — ฿179/เดือน</a>
       </div>
     </div>
   </section>
@@ -447,7 +461,7 @@ let currentGender = 'all';
 let selectedVoice = null;
 let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
 let lastDate = localStorage.getItem('vt_date')||'';
-const FREE_LIMIT = 1500;
+const FREE_LIMIT = 2000;
 const today = new Date().toDateString();
 if (lastDate !== today) { dailyChars = 0; localStorage.setItem('vt_date', today); localStorage.setItem('vt_chars','0'); }
 
@@ -620,9 +634,9 @@ function switchUI(lang) {
   if (badges[2]) badges[2].textContent = lang==='th'?'🌏 หลายภาษา':lang==='zh'?'🌏 多语言':'🌏 Multi-Language';
   if (badges[3]) badges[3].textContent = lang==='th'?'♂️♀️ เสียงชาย/หญิง':lang==='zh'?'♂️♀️ 男声/女声':'♂️♀️ Male/Female';
   // Char count
-  document.querySelector('.char-row .free-limit').innerHTML = lang==='th'?'🆓 ฟรี <span id="limit-num">1500</span> ตัวอักษร/วัน':
-    lang==='zh'?'🆓 免费 <span id="limit-num">1500</span> 字/天':
-    '🆓 Free <span id="limit-num">1500</span> chars/day';
+  document.querySelector('.char-row .free-limit').innerHTML = lang==='th'?'🆓 ฟรี <span id="limit-num">2000</span> ตัวอักษร/วัน':
+    lang==='zh'?'🆓 免费 <span id="limit-num">2000</span> 字/天':
+    '🆓 Free <span id="limit-num">2000</span> chars/day';
   document.querySelector('.char-row span:first-child').innerHTML = '<span id="char-num">0</span> ' + (lang==='th'?'ตัวอักษร':lang==='zh'?'字':'chars');
   // Gender buttons
   const gbtns = document.querySelectorAll('.gender-btn');
@@ -660,9 +674,9 @@ function updateTierText(){
     freeCard.querySelector('h3').textContent = isZh?'🆓 免费':isEn?'🆓 Free':'🆓 ฟรี';
     freeCard.querySelector('.period').textContent = isZh?'永久':isEn?'Forever':'ตลอดไป';
     const freeLis = freeCard.querySelectorAll('ul li');
-    const freeT = isZh?['1500 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音']:
-      isEn?['1500 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices']:
-      ['1500 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'];
+    const freeT = isZh?['2000 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音']:
+      isEn?['2000 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices']:
+      ['2000 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'];
     freeLis.forEach((li,i)=>{ if(freeT[i]){ const chk=li.querySelector('.check'); li.innerHTML=(i<4?`<span class="check">✅</span> `:i<6?`<span style="color:#9ca3af;">❌</span> `:``)+freeT[i]; } });
     freeCard.querySelector('.btn-tier').textContent = isZh?'开始免费使用':isEn?'Start Free':'เริ่มใช้ฟรี';
   }
@@ -678,6 +692,18 @@ function updateTierText(){
       ['<strong>5,000 ตัวอักษร/วัน</strong>','20+ เสียงพรีเมียม','ดาวน์โหลด MP3 ไม่จำกัด','เสียงคุณภาพ HD','ใช้งานเชิงพาณิชย์ได้'];
     proLis.forEach((li,i)=>{ if(proT[i]) li.innerHTML=`<span class="check">✅</span> ${proT[i]}`; });
     proCard.querySelector('.btn-tier').textContent = isZh?'立即升级 — ฿99/月':isEn?'Upgrade Now — ฿99/month':'อัปเกรดเลย — ฿99/เดือน';
+  }
+  // Max card
+  const maxCard = document.querySelectorAll('.tier-card')[2];
+  if (maxCard) {
+    maxCard.querySelector('h3').textContent = isZh?'🚀 旗舰版':isEn?'🚀 Max':'🚀 แม็กซ์';
+    maxCard.querySelector('.period').textContent = '≈ ¥37 RMB · ≈ $5 USD';
+    const maxLis = maxCard.querySelectorAll('ul li');
+    const maxT = isZh?['<strong>10,000 字/天</strong>','30+ 高级AI声音','无限下载 MP3','真人般自然','最快处理速度']:
+      isEn?['<strong>10,000 chars/day</strong>','30+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Fastest processing']:
+      ['<strong>10,000 ตัวอักษร/วัน</strong>','30+ เสียง AI คุณภาพสูง','ดาวน์โหลด MP3 ไม่จำกัด','เสียงฟังดูเป็นธรรมชาติ','ประมวลผลเร็วที่สุด'];
+    maxLis.forEach((li,i)=>{ if(maxT[i]) li.innerHTML=`<span class="check">✅</span> ${maxT[i]}`; });
+    maxCard.querySelector('.btn-tier').textContent = isZh?'立即升级 — ฿179/月':isEn?'Upgrade Now — ฿179/month':'อัปเกรดเลย — ฿179/เดือน';
   }
 }
 
