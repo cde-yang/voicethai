@@ -287,7 +287,6 @@ body {
 
     <!-- Voice Cards -->
     <div class="voice-cards" id="voice-cards"></div>
-    <div style="font-size:11px;color:var(--sub);margin-top:2px;" id="voice-debug"></div>
 
     <!-- Speed -->
     <div class="speed-row">
@@ -407,7 +406,7 @@ let currentGender = 'all';
 let selectedVoice = null;
 let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
 let lastDate = localStorage.getItem('vt_date')||'';
-const FREE_LIMIT = 99999; // TESTING
+const FREE_LIMIT = 500;
 const today = new Date().toDateString();
 if (lastDate !== today) { dailyChars = 0; localStorage.setItem('vt_date', today); localStorage.setItem('vt_chars','0'); }
 
@@ -488,7 +487,6 @@ function loadVoices() {
     selectedVoice = filtered[0];
   }
 
-  var dbg=document.getElementById('voice-debug');
   if(dbg){var maleC=voices.filter(function(v){return v._gender==='male'}).length;var femaleC=voices.filter(function(v){return v._gender==='female'}).length;var unkC=voices.filter(function(v){return v._gender==='unknown'}).length;dbg.textContent='🎤 '+voices.length+' voices total: 👨'+maleC+' male · 👩'+femaleC+' female · ?'+unkC+' unknown | Filtering: '+(currentGender==='all'?'all':currentGender)}
 }
 
@@ -497,7 +495,6 @@ function selectVoice(el, name) {
   el.classList.add('active');
   const voices = speechSynthesis.getVoices();
   selectedVoice = voices.find(v => v.name === name) || voices[0];
-  console.log('Selected:', selectedVoice?.name, 'Lang:', selectedVoice?.lang);
 }
 
 function selectGender(gender) {
@@ -510,22 +507,6 @@ function selectGender(gender) {
 
 speechSynthesis.onvoiceschanged = loadVoices;
 loadVoices();
-// Debug: print all available voices with gender detection
-setTimeout(function(){
-  var all = speechSynthesis.getVoices();
-  console.log('=== ALL VOICES ('+all.length+') ===');
-  var byLang = {};
-  all.forEach(function(v){
-    var g = detectGender(v.name||'');
-    var key = v.lang.split('-')[0];
-    if(!byLang[key]) byLang[key]=[];
-    byLang[key].push(g+': '+v.name);
-  });
-  Object.keys(byLang).sort().forEach(function(k){
-    console.log('--- '+k+' ---');
-    byLang[k].forEach(function(l){console.log('  '+l)});
-  });
-}, 2000);
 
 // ============ LANG TABS ============
 document.querySelectorAll('.lang-tab').forEach(tab => {
