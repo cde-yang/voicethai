@@ -509,6 +509,22 @@ function selectGender(gender) {
 
 speechSynthesis.onvoiceschanged = loadVoices;
 loadVoices();
+// Debug: print all available voices with gender detection
+setTimeout(function(){
+  var all = speechSynthesis.getVoices();
+  console.log('=== ALL VOICES ('+all.length+') ===');
+  var byLang = {};
+  all.forEach(function(v){
+    var g = detectGender(v.name||'');
+    var key = v.lang.split('-')[0];
+    if(!byLang[key]) byLang[key]=[];
+    byLang[key].push(g+': '+v.name);
+  });
+  Object.keys(byLang).sort().forEach(function(k){
+    console.log('--- '+k+' ---');
+    byLang[k].forEach(function(l){console.log('  '+l)});
+  });
+}, 2000);
 
 // ============ LANG TABS ============
 document.querySelectorAll('.lang-tab').forEach(tab => {
