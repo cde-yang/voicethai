@@ -432,8 +432,9 @@ function t(key) { return (uiText[currentUI]||uiText['th'])[key]||key; }
 
 // ============ KNOWN VOICE GENDER MAP ============
 // Based on Windows/macOS/Chrome common voice names
-const FEMALE_NAMES = ['female','woman','girl','หญิง','女','hui','yaoyao','xiaoxiao','hanhan','tharathee','achara','premium','kanya','lisa','sarah','emma','samantha','catherine','linda','mary','zira','marka','martha','eva'];
-const MALE_NAMES = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','sarawut','somchai','narong','david','james','mike','john','mark','george','paul','richard'];
+// Known voice names from Windows/Chrome — English + Thai + Chinese + Vietnamese + Indonesian
+const FEMALE_NAMES = ['female','woman','girl','หญิง','女','hui','yaoyao','xiaoxiao','hanhan','tharathee','achara','prem','kanya','lisa','sarah','emma','samantha','catherine','linda','mary','zira','marka','martha','eva','เปรม','อัจฉรา','กัญญา','ธราธี','hoaimy','gadis'];
+const MALE_NAMES = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','sarawut','somchai','narong','david','james','mike','john','mark','george','paul','richard','นิวัฒน์','สมชาย','ณรงค์','namminh','ardi'];
 
 function detectGender(name) {
   const nl = name.toLowerCase();
