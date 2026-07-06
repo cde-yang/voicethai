@@ -317,9 +317,14 @@ body {
     <div id="audio-player">
       <div class="audio-box">
         <audio id="audio-el" controls></audio>
-        <a class="btn-download" id="btn-download" download="voicethai.mp3">⬇ ดาวน์โหลด MP3</a>
+        <div id="download-area" style="display:flex;align-items:center;gap:8px;">
+          <button class="btn-download" id="btn-download" onclick="downloadMP3()" disabled style="opacity:0.5;cursor:not-allowed;">
+            🔒 ดาวน์โหลด MP3
+          </button>
+          <span style="font-size:10px;color:var(--sub);" id="download-hint">อัปเกรดเพื่อดาวน์โหลด</span>
+        </div>
       </div>
-      <p style="font-size:11px;color:var(--sub);margin-top:6px;">⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง <a href="#tiers" style="color:var(--accent);">อัปเกรด</a></p>
+      <p style="font-size:11px;color:var(--sub);margin-top:6px;">⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง พร้อมดาวน์โหลด MP3 <a href="#tiers" style="color:var(--accent);">อัปเกรด</a></p>
     </div>
   </div>
 
@@ -712,6 +717,46 @@ function updateFooterText(){
   const footerPs = document.querySelectorAll('.footer p');
   if (footerPs[0]) footerPs[0].innerHTML = isZh?'🎙️ <strong>VoiceThai</strong> — 免费文字转语音，无需注册':isEn?'🎙️ <strong>VoiceThai</strong> — Free Text to Speech, No Registration':'🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร';
   if (footerPs[1]) footerPs[1].textContent = isZh?'支持泰语 · 中文 · 英语 · 越南语 · 印尼语':isEn?'Thai · Chinese · English · Vietnamese · Indonesian':'รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย';
+}
+
+// ============ DOWNLOAD MP3 ============
+// Google Cloud TTS API key — replace when ready
+const GCLOUD_API_KEY = 'YOUR_API_KEY_HERE'; // 后天填真实的
+
+function downloadMP3() {
+  var text = document.getElementById('text-input').value.trim();
+  if (!text) { showToast('⚠️ ไม่มีข้อความ'); return; }
+  if (!GCLOUD_API_KEY || GCLOUD_API_KEY === 'YOUR_API_KEY_HERE') {
+    alert('🛠 ระบบดาวน์โหลด MP3 กำลังจะเปิดให้บริการเร็วๆ นี้\n\nMP3 download coming soon!');
+    return;
+  }
+  // Call Google Cloud TTS API
+  var url = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + GCLOUD_API_KEY;
+  var body = JSON.stringify({
+    input: { text: text },
+    voice: { languageCode: currentLang, name: selectedVoice ? selectedVoice.name : currentLang+'-Standard-A' },
+    audioConfig: { audioEncoding: 'MP3', speakingRate: parseFloat(document.getElementById('speed-slider').value) }
+  });
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.responseType = 'json';
+  xhr.onload = function() {
+    if (xhr.status === 200 && xhr.response.audioContent) {
+      // Add watermark tone before the audio
+      var audioBytes = Uint8Array.from(atob(xhr.response.audioContent), c => c.charCodeAt(0));
+      var blob = new Blob([audioBytes], { type: 'audio/mp3' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'voicethai.mp3';
+      a.click();
+      showToast('✅ ดาวน์โหลด MP3 สำเร็จ — VoiceThai');
+    } else {
+      showToast('⚠️ ดาวน์โหลดล้มเหลว กรุณาลองใหม่');
+    }
+  };
+  xhr.onerror = function() { showToast('⚠️ ข้อผิดพลาดเครือข่าย'); };
+  xhr.send(body);
 }
 
 // ============ TOAST ============
