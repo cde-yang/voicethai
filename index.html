@@ -9,23 +9,24 @@
 <meta property="og:description" content="ฟรี ไม่จำกัด ไม่ต้องสมัคร เลือกเสียงชาย/หญิง รองรับภาษาไทย จีน อังกฤษ เวียดนาม อินโดนีเซีย">
 <title>แปลงข้อความเป็นเสียง ฟรี | AI TTS หลายภาษา — VoiceThai</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg: #f5f5f7;
+  --bg: #f5f5f5;
   --card: #ffffff;
-  --text: #1d1d1f;
-  --sub: #86868b;
-  --accent: #0071e3;
-  --accent-hover: #0077ed;
-  --accent-light: #e8f2fd;
-  --gold: #ff9f0a;
-  --border: #d2d2d7;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.04);
-  --shadow-md: 0 4px 20px rgba(0,0,0,.06);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,.08);
-  --radius: 20px;
-  --radius-sm: 14px;
+  --text: #292524;
+  --sub: #4e4e4e;
+  --ink: #0c0a09;
+  --accent: #0c0a09;
+  --accent-hover: #292524;
+  --accent-light: #f5f5f5;
+  --gold: #b45309;
+  --border: #e7e5e4;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.03);
+  --shadow-md: 0 2px 16px rgba(0,0,0,.04);
+  --shadow-lg: 0 4px 32px rgba(0,0,0,.06);
+  --radius: 16px;
+  --radius-sm: 12px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -65,10 +66,10 @@ body {
 .lang-btn.active { background: var(--text); color: white; }
 
 /* Hero */
-.hero { text-align: center; padding: 48px 0 36px; }
-.hero h1 { font-size: 40px; font-weight: 800; line-height: 1.15; margin-bottom: 12px; letter-spacing: -0.5px; }
-.hero h1 span { background: linear-gradient(135deg, #5856d6, #0071e3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero p { font-size: 17px; color: var(--sub); max-width: 500px; margin: 0 auto; font-weight: 400; letter-spacing: -0.1px; }
+.hero { text-align: center; padding: 64px 0 48px; }
+.hero h1 { font-size: 48px; font-weight: 300; line-height: 1.18; margin-bottom: 16px; letter-spacing: -0.8px; color: var(--ink); }
+.hero h1 span { color: var(--ink); font-weight: 500; }
+.hero p { font-size: 17px; color: var(--sub); max-width: 520px; margin: 0 auto; font-weight: 400; letter-spacing: -0.1px; line-height: 1.6; }
 .badges { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 .badge {
   font-size: 12px; padding: 6px 14px; border-radius: 20px; font-weight: 500;
@@ -88,45 +89,46 @@ body {
 /* Language tabs */
 .lang-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
 .lang-tab {
-  padding: 8px 18px; border-radius: 22px; border: 1px solid var(--border);
-  background: var(--card); font-size: 13px; cursor: pointer; font-weight: 500;
+  padding: 8px 18px; border-radius: 100px; border: 1px solid var(--border);
+  background: var(--card); font-size: 13px; cursor: pointer; font-weight: 400;
   transition: all 0.2s; color: var(--sub); font-family: inherit;
 }
-.lang-tab:hover { border-color: var(--accent); color: var(--accent); }
-.lang-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+.lang-tab:hover { border-color: var(--ink); color: var(--ink); }
+.lang-tab.active { background: var(--ink); color: white; border-color: var(--ink); }
 
 /* Textarea */
 #text-input {
   width: 100%; min-height: 130px; padding: 18px 20px; font-size: 16px;
-  border: 1.5px solid var(--border); border-radius: var(--radius-sm); resize: vertical;
-  font-family: inherit; line-height: 1.7; transition: all 0.2s; background: #fafafa;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); resize: vertical;
+  font-family: inherit; line-height: 1.7; transition: all 0.2s; background: var(--bg);
 }
-#text-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0,113,227,.1); background: white; }
-#text-input::placeholder { color: #aeaeb2; }
+#text-input:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(0,0,0,.04); background: white; }
+#text-input::placeholder { color: #a8a29e; }
 .char-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12px; color: var(--sub); }
 .char-row .free-limit { color: #1b873b; font-weight: 600; }
 
 /* Gender picker */
 .gender-row { display: flex; gap: 12px; margin: 18px 0; }
 .gender-btn {
-  flex: 1; padding: 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border);
-  background: var(--card); cursor: pointer; font-size: 14px; font-weight: 500;
+  flex: 1; padding: 14px; border-radius: 100px; border: 1px solid var(--border);
+  background: var(--card); cursor: pointer; font-size: 14px; font-weight: 400;
   transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
-  font-family: inherit;
+  font-family: inherit; color: var(--sub);
 }
-.gender-btn:hover { border-color: var(--accent); background: var(--accent-light); }
-.gender-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 600; }
+.gender-btn:hover { border-color: var(--ink); color: var(--ink); }
+.gender-btn.active { border-color: var(--ink); background: var(--accent-light); color: var(--ink); font-weight: 500; }
 .gender-btn .emoji { font-size: 20px; }
 
 /* Voice cards */
 .voice-cards { display: flex; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
 .voice-card {
-  padding: 10px 18px; border-radius: var(--radius-sm); border: 1.5px solid var(--border);
-  background: var(--card); cursor: pointer; font-size: 12px; font-weight: 500;
+  padding: 10px 18px; border-radius: 100px; border: 1px solid var(--border);
+  background: var(--card); cursor: pointer; font-size: 12px; font-weight: 400;
   transition: all 0.2s; text-align: center; min-width: 100px; font-family: inherit;
+  color: var(--sub);
 }
-.voice-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(0,113,227,.06); }
-.voice-card.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 600; }
+.voice-card:hover { border-color: var(--ink); color: var(--ink); }
+.voice-card.active { border-color: var(--ink); background: var(--accent-light); color: var(--ink); font-weight: 500; }
 .voice-card .v-name { display: block; }
 .voice-card .v-lang { display: block; font-size: 10px; color: var(--sub); font-weight: 400; margin-top: 3px; }
 
@@ -137,13 +139,13 @@ body {
 
 /* Button */
 .btn-generate {
-  width: 100%; padding: 18px; border: none; border-radius: var(--radius-sm);
-  font-size: 17px; font-weight: 600; cursor: pointer; transition: all 0.25s;
-  background: var(--accent); color: white;
+  width: 100%; padding: 18px; border: none; border-radius: 100px;
+  font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.25s;
+  background: var(--ink); color: white; font-family: inherit;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-generate:hover { background: var(--accent-hover); box-shadow: 0 4px 20px rgba(0,113,227,.3); }
-.btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-generate:hover { background: #292524; }
+.btn-generate:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .btn-generate .spinner {
   width: 22px; height: 22px; border: 3px solid rgba(255,255,255,.3);
   border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; display: none;
@@ -161,12 +163,12 @@ body {
 }
 .audio-box audio { flex: 1; min-width: 200px; }
 .btn-download {
-  padding: 10px 22px; border-radius: 24px; border: none;
-  background: var(--text); color: white; font-size: 13px; font-weight: 600;
+  padding: 10px 22px; border-radius: 100px; border: 1px solid var(--border);
+  background: var(--card); color: var(--ink); font-size: 13px; font-weight: 400;
   cursor: pointer; transition: all .2s; white-space: nowrap; font-family: inherit;
   text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
 }
-.btn-download:hover { background: #333; }
+.btn-download:hover { background: var(--accent-light); }
 
 /* Tiers */
 .tier-section { margin: 48px 0 24px; }
@@ -178,28 +180,28 @@ body {
   text-align: center; transition: all 0.3s; box-shadow: var(--shadow-sm);
 }
 .tier-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-.tier-card.pro { border-color: var(--accent); position: relative; }
+.tier-card.pro { border-color: var(--ink); position: relative; }
 .tier-card .popular {
   position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-  background: var(--accent); color: white; padding: 6px 18px;
-  border-radius: 16px; font-size: 12px; font-weight: 600;
+  background: var(--ink); color: white; padding: 6px 18px;
+  border-radius: 100px; font-size: 12px; font-weight: 500;
 }
-.tier-card h3 { font-size: 15px; color: var(--sub); margin-bottom: 10px; font-weight: 500; }
-.tier-card .price { font-size: 40px; font-weight: 800; margin-bottom: 4px; letter-spacing: -1px; }
+.tier-card h3 { font-size: 15px; color: var(--sub); margin-bottom: 10px; font-weight: 400; }
+.tier-card .price { font-size: 40px; font-weight: 300; margin-bottom: 4px; letter-spacing: -1px; color: var(--ink); }
 .tier-card .price small { font-size: 15px; color: var(--sub); font-weight: 400; }
 .tier-card .period { font-size: 13px; color: var(--sub); margin-bottom: 16px; }
 .tier-card ul { text-align: left; margin-bottom: 20px; list-style: none; }
 .tier-card ul li { padding: 7px 0; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 8px; }
-.tier-card ul li .check { color: var(--accent); }
+.tier-card ul li .check { color: var(--gold); }
 .tier-card .btn-tier {
-  display: block; width: 100%; padding: 14px; border-radius: 28px;
-  font-size: 15px; font-weight: 600; cursor: pointer; transition: all .2s; text-decoration: none;
+  display: block; width: 100%; padding: 14px; border-radius: 100px;
+  font-size: 15px; font-weight: 500; cursor: pointer; transition: all .2s; text-decoration: none;
   font-family: inherit;
 }
-.btn-free-tier { background: var(--card); color: var(--accent); border: 2px solid var(--accent); }
+.btn-free-tier { background: var(--card); color: var(--ink); border: 1px solid var(--border); }
 .btn-free-tier:hover { background: var(--accent-light); }
-.btn-pro-tier { background: var(--accent); color: white; border: none; }
-.btn-pro-tier:hover { background: var(--accent-hover); }
+.btn-pro-tier { background: var(--ink); color: white; border: none; }
+.btn-pro-tier:hover { background: #292524; }
 
 /* FAQ */
 .faq-section details {
