@@ -385,7 +385,7 @@ body {
           <li><span class="check">✅</span> เสียงฟังดูเป็นธรรมชาติ</li>
           <li><span class="check">✅</span> ใช้งานเชิงพาณิชย์ได้</li>
         </ul>
-        <a href="#" class="btn-tier btn-pro-tier" onclick="alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nPayment system coming soon!\n\nสนใจติดต่อ: voicethai@proton.me\n\nPayment: TrueMoney / Rabbit Line Pay / PromptPay')">อัปเกรดเลย — ฿99/เดือน</a>
+        <a href="#" class="btn-tier btn-pro-tier" onclick="trackUpgrade('pro')">อัปเกรดเลย — ฿99/เดือน</a>
       </div>
       <!-- Max Tier -->
       <div class="tier-card">
@@ -399,7 +399,7 @@ body {
           <li><span class="check">✅</span> เสียงฟังดูเป็นธรรมชาติ</li>
           <li><span class="check">✅</span> ประมวลผลเร็วที่สุด</li>
         </ul>
-        <a href="#" class="btn-tier btn-pro-tier" onclick="alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nPayment system coming soon!')">อัปเกรดเลย — ฿179/เดือน</a>
+        <a href="#" class="btn-tier btn-pro-tier" onclick="trackUpgrade('max')">อัปเกรดเลย — ฿179/เดือน</a>
       </div>
     </div>
   </section>
@@ -757,6 +757,28 @@ function downloadMP3() {
   };
   xhr.onerror = function() { showToast('⚠️ ข้อผิดพลาดเครือข่าย'); };
   xhr.send(body);
+}
+
+// ============ UPGRADE TRACKING ============
+function trackUpgrade(tier) {
+  var key = 'vt_upgrade_clicks';
+  var data = JSON.parse(localStorage.getItem(key)||'{}');
+  if (!data[tier]) data[tier] = { clicks: 0, last: null };
+  data[tier].clicks++;
+  data[tier].last = new Date().toISOString();
+  data.total = (data.pro?.clicks||0) + (data.max?.clicks||0);
+  localStorage.setItem(key, JSON.stringify(data));
+  alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nมีคนสนใจ '+(data.total)+' ครั้งแล้ว!\n\nสนใจติดต่อ: voicethai@proton.me\n\nPayment coming soon — '+data.total+' interested so far!');
+}
+// Add ?admin to URL to see stats
+if (window.location.search.includes('admin')) {
+  window.addEventListener('DOMContentLoaded', function(){
+    var data = JSON.parse(localStorage.getItem('vt_upgrade_clicks')||'{}');
+    var box = document.createElement('div');
+    box.style.cssText = 'position:fixed;top:16px;right:16px;background:#1d1d1f;color:white;padding:16px 20px;border-radius:12px;font-size:13px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.3);line-height:1.8;';
+    box.innerHTML = '<strong>📊 Admin</strong><br>โปร (฿99): '+(data.pro?.clicks||0)+' clicks<br>แม็กซ์ (฿179): '+(data.max?.clicks||0)+' clicks<br>รวม: '+(data.total||0)+' <br><small style="opacity:.5">'+window.location.href+'</small>';
+    document.body.appendChild(box);
+  });
 }
 
 // ============ TOAST ============
