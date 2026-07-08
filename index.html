@@ -584,29 +584,41 @@ function t(key) { return (uiText[currentUI]||uiText['th'])[key]||key; }
 
 // ============ KNOWN VOICE GENDER MAP ============
 // Based on Windows/macOS/Chrome common voice names
-// Known voice gender lookup (exact match on lowercase name)
+// Known voice gender lookup (exact substring match)
 const KNOWN_VOICES = {
-  'microsoft huihui desktop': 'female',
+  // Windows Chinese voices — Female
   'microsoft huihui': 'female',
-  'microsoft xiaoxiao online (natural)': 'female',
+  'huihui': 'female',
   'microsoft xiaoxiao': 'female',
+  'xiaoxiao': 'female',
   'microsoft yaoyao': 'female',
+  'yaoyao': 'female',
   'microsoft hanhan': 'female',
+  'hanhan': 'female',
+  'microsoft xiaoyan': 'female',
+  'xiaoyan': 'female',
+  'microsoft xiaohan': 'female',
+  'microsoft xiaohan': 'female',
+  // Windows Chinese voices — Male
   'microsoft kangkang': 'male',
+  'kangkang': 'male',
   'microsoft yunyang': 'male',
+  'yunyang': 'male',
   'microsoft yunjian': 'male',
-  'microsoft yunxi online (natural)': 'male',
+  'yunjian': 'male',
   'microsoft yunxi': 'male',
-  'microsoft yunye online (natural)': 'male',
+  'yunxi': 'male',
   'microsoft yunye': 'male',
-  'microsoft yunfeng online (natural)': 'male',
+  'yunye': 'male',
   'microsoft yunfeng': 'male',
-  'microsoft yunhao online (natural)': 'male',
+  'yunfeng': 'male',
   'microsoft yunhao': 'male',
-  'microsoft yunxia online (natural)': 'male',
+  'yunhao': 'male',
   'microsoft yunxia': 'male',
-  'microsoft yunze online (natural)': 'male',
+  'yunxia': 'male',
   'microsoft yunze': 'male',
+  'yunze': 'male',
+  // Thai voices
   'microsoft premwadee': 'female',
   'microsoft achara': 'female',
   'microsoft kanya': 'female',
@@ -615,27 +627,31 @@ const KNOWN_VOICES = {
   'microsoft somchai': 'male',
   'microsoft narong': 'male',
   'microsoft niwat': 'male',
+  // Google / Chrome voices — Female
   'google 普通话': 'female',
   'google 粤语': 'female',
   'google 國語': 'female',
   'google thai': 'female',
   'google indonesian': 'female',
   'google vietnamese': 'female',
+  // Google / Chrome voices — Male
+  'google 普通话男': 'male',
 };
 
-// Gender keywords: checked with word-boundary awareness
-const FEMALE_NAMES = ['female','woman','girl','หญิง','女','hui','yaoyao','xiaoxiao','hanhan','tharathee','achara','prem','kanya','lisa','sarah','emma','samantha','catherine','linda','mary','zira','marka','martha','eva','เปรม','อัจฉรา','กัญญา','ธราธี','hoaimy','gadis','nueng','darina','natcha'];
-const MALE_NAMES = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','yunxi','yunye','yunfeng','yunhao','yunxia','yunze','sarawut','somchai','narong','david','james','mike','john','mark','george','paul','richard','นิวัฒน์','สมชาย','ณรงค์','namminh','ardi','budhi','wibowo'];
+// Keyword-based gender hints (substring match on lowercase name)
+const FEMALE_NAMES = ['female','woman','girl','หญิง','女','hui','huihui','hanhan','yaoyao','xiaoxiao','tharathee','achara','prem','premwadee','kanya','lisa','sarah','emma','samantha','catherine','linda','mary','zira','marka','martha','eva','เปรม','อัจฉรา','กัญญา','ธราธี','hoaimy','gadis','nueng','darina','natcha','hsiao-chen','ting-ting','mei-jia','hanhan'];
+const MALE_NAMES = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','yunxi','yunye','yunfeng','yunhao','yunxia','yunze','sarawut','somchai','narong','david','james','mike','john','mark','george','paul','richard','นิวัฒน์','สมชาย','ณรงค์','namminh','ardi','budhi','wibowo','chih-wei','chih-hung'];
 
 function detectGender(name) {
   const nl = name.toLowerCase();
-  // First check known voice database (exact match)
-  for (var key in KNOWN_VOICES) {
-    if (nl.indexOf(key) !== -1) return KNOWN_VOICES[key];
+  // First check known voice database (substring match — order matters: longer keys first)
+  const sortedKeys = Object.keys(KNOWN_VOICES).sort((a,b) => b.length - a.length);
+  for (var i = 0; i < sortedKeys.length; i++) {
+    if (nl.indexOf(sortedKeys[i]) !== -1) return KNOWN_VOICES[sortedKeys[i]];
   }
-  // Then check keyword heuristics
-  if (FEMALE_NAMES.some(x => nl.indexOf(x) !== -1)) return 'female';
-  if (MALE_NAMES.some(x => nl.indexOf(x) !== -1)) return 'male';
+  // Then keyword heuristics
+  if (FEMALE_NAMES.some(function(x){return nl.indexOf(x) !== -1;})) return 'female';
+  if (MALE_NAMES.some(function(x){return nl.indexOf(x) !== -1;})) return 'male';
   return 'unknown';
 }
 
@@ -659,11 +675,12 @@ function loadVoices() {
   // Tag each voice with gender (keep original voice object, add _gender)
   voices = voices.map(v => { v._gender = detectGender(v.name||''); return v; });
 
-  // Gender filter: exclude only the OPPOSITE gender, keep unknowns
+  // Gender filter: STRICT — only show confirmed matching gender
+  // If a voice is 'unknown', it won't appear in either list (prevents mixing)
   let filtered = voices;
-  if (currentGender === 'female') filtered = voices.filter(v => v._gender !== 'male');
-  else filtered = voices.filter(v => v._gender !== 'female');
-  // If still nothing, fall back to all
+  if (currentGender === 'female') filtered = voices.filter(v => v._gender === 'female');
+  else filtered = voices.filter(v => v._gender === 'male');
+  // If no voices match, fall back to ALL (better than showing nothing)
   if (filtered.length === 0) filtered = voices;
 
   const genderEmoji = { female: '👩', male: '👨', unknown: '🎤' };
@@ -682,7 +699,11 @@ function loadVoices() {
     selectedVoice = filtered[0];
   }
 
-  if(dbg){var maleC=voices.filter(function(v){return v._gender==='male'}).length;var femaleC=voices.filter(function(v){return v._gender==='female'}).length;var unkC=voices.filter(function(v){return v._gender==='unknown'}).length;dbg.textContent='🎤 '+voices.length+' voices total: 👨'+maleC+' male · 👩'+femaleC+' female · ?'+unkC+' unknown | Filtering: '+(currentGender==='all'?'all':currentGender)}
+  // Debug: log all voice names and detected genders
+  console.group('VoiceThai — Voice Detection');
+  console.log('Language:', currentLang, '| Filter:', currentGender);
+  voices.forEach(function(v){console.log(v._gender.toUpperCase().substring(0,1)+' '+v.name+' ['+v.lang+'] → '+v._gender);});
+  console.groupEnd();
 }
 
 function selectVoice(el, name) {
