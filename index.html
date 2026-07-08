@@ -308,10 +308,7 @@ body {
 
     <!-- Gender Select -->
     <div class="gender-row">
-      <button class="gender-btn active" data-gender="all" onclick="selectGender('all')">
-        <span class="emoji">🎤</span> ทั้งหมด
-      </button>
-      <button class="gender-btn" data-gender="female" onclick="selectGender('female')">
+      <button class="gender-btn active" data-gender="female" onclick="selectGender('female')">
         <span class="emoji">👩</span> เสียงผู้หญิง
       </button>
       <button class="gender-btn" data-gender="male" onclick="selectGender('male')">
@@ -467,7 +464,7 @@ body {
 <script>
 // ============ STATE ============
 let currentLang = 'th-TH';
-let currentGender = 'all';
+let currentGender = 'female';
 let selectedVoice = null;
 let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
 let lastDate = localStorage.getItem('vt_date')||'';
@@ -665,8 +662,8 @@ function loadVoices() {
   // Gender filter: exclude only the OPPOSITE gender, keep unknowns
   let filtered = voices;
   if (currentGender === 'female') filtered = voices.filter(v => v._gender !== 'male');
-  if (currentGender === 'male') filtered = voices.filter(v => v._gender !== 'female');
-  // If still nothing (highly unlikely), fall back to all
+  else filtered = voices.filter(v => v._gender !== 'female');
+  // If still nothing, fall back to all
   if (filtered.length === 0) filtered = voices;
 
   const genderEmoji = { female: '👩', male: '👨', unknown: '🎤' };
@@ -789,11 +786,10 @@ function switchUI(lang) {
   if (cl) cl.innerHTML = T.freeLimit + ' <span id="limit-num">2000</span> ' + T.perDay;
   var cs = document.querySelector('.char-row span:first-child');
   if (cs) cs.innerHTML = '<span id="char-num">' + (document.getElementById('text-input').value.length) + '</span> ' + T.chars;
-  // Gender buttons
+  // Gender buttons (2 buttons: female, male)
   var gbtns = document.querySelectorAll('.gender-btn');
-  if (gbtns[0]) gbtns[0].innerHTML = '<span class="emoji">🎤</span> ' + T.genderAll;
-  if (gbtns[1]) gbtns[1].innerHTML = '<span class="emoji">👩</span> ' + T.genderFemale;
-  if (gbtns[2]) gbtns[2].innerHTML = '<span class="emoji">👨</span> ' + T.genderMale;
+  if (gbtns[0]) gbtns[0].innerHTML = '<span class="emoji">👩</span> ' + T.genderFemale;
+  if (gbtns[1]) gbtns[1].innerHTML = '<span class="emoji">👨</span> ' + T.genderMale;
   // Speed
   var st = document.getElementById('speed-text');
   if (st) st.textContent = T.speedText;
