@@ -469,6 +469,56 @@ let selectedVoice = null;
 let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
 let lastDate = localStorage.getItem('vt_date')||'';
 const FREE_LIMIT = 10000;
+
+// ============ PREMIUM MEMBERSHIP ============
+// Check localStorage for membership status (simulated until Paddle payment is integrated)
+function isMember() { return localStorage.getItem('vt_member') === 'true'; }
+// Toggle premium for testing — type enablePremium() or disablePremium() in console, or click the admin panel
+window.enablePremium = function() { localStorage.setItem('vt_member', 'true'); location.reload(); };
+window.disablePremium = function() { localStorage.removeItem('vt_member'); location.reload(); };
+
+// Google Cloud TTS voice catalog — shown to premium members
+// These are the voices available via Google Cloud TTS API (real human-like AI voices)
+const GOOGLE_VOICES = {
+  'th-TH': [
+    { name: 'th-TH-Neural2-A', label: 'Premwadee HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'th-TH-Neural2-C', label: 'Kanya HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'th-TH-Standard-A', label: 'Achara ♀', gender: 'female', tier: 'standard' },
+    { name: 'th-TH-Standard-C', label: 'Niwat AI ♂', gender: 'male', tier: 'standard' },
+  ],
+  'zh-CN': [
+    { name: 'cmn-CN-Neural2-A', label: '小瑶 HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'cmn-CN-Neural2-B', label: '云健 HD ♂', gender: 'male', tier: 'neural2' },
+    { name: 'cmn-CN-Neural2-C', label: '云阳 HD ♂', gender: 'male', tier: 'neural2' },
+    { name: 'cmn-CN-Neural2-D', label: '小晖 HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'cmn-CN-Standard-A', label: '小瑶 ♀', gender: 'female', tier: 'standard' },
+    { name: 'cmn-CN-Standard-B', label: '云健 ♂', gender: 'male', tier: 'standard' },
+    { name: 'cmn-CN-Standard-C', label: '云阳 ♂', gender: 'male', tier: 'standard' },
+    { name: 'cmn-CN-Standard-D', label: '小晖 ♀', gender: 'female', tier: 'standard' },
+  ],
+  'en-US': [
+    { name: 'en-US-Neural2-A', label: 'Alice HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'en-US-Neural2-B', label: 'Bob HD ♂', gender: 'male', tier: 'neural2' },
+    { name: 'en-US-Neural2-C', label: 'Carol HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'en-US-Neural2-D', label: 'Dan HD ♂', gender: 'male', tier: 'neural2' },
+    { name: 'en-US-Standard-A', label: 'Alice ♀', gender: 'female', tier: 'standard' },
+    { name: 'en-US-Standard-B', label: 'Bob ♂', gender: 'male', tier: 'standard' },
+  ],
+  'vi-VN': [
+    { name: 'vi-VN-Neural2-A', label: 'Hoa My HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'vi-VN-Neural2-B', label: 'Nam Minh HD ♂', gender: 'male', tier: 'neural2' },
+    { name: 'vi-VN-Standard-A', label: 'Hoa My ♀', gender: 'female', tier: 'standard' },
+    { name: 'vi-VN-Standard-B', label: 'Nam Minh ♂', gender: 'male', tier: 'standard' },
+  ],
+  'id-ID': [
+    { name: 'id-ID-Neural2-A', label: 'Gadis HD ♀', gender: 'female', tier: 'neural2' },
+    { name: 'id-ID-Neural2-B', label: 'Ardi HD ♂', gender: 'male', tier: 'neural2' },
+    { name: 'id-ID-Standard-A', label: 'Gadis ♀', gender: 'female', tier: 'standard' },
+    { name: 'id-ID-Standard-B', label: 'Ardi ♂', gender: 'male', tier: 'standard' },
+  ]
+};
+// Get Google voices for current language
+function getGoogleVoices(lang) { return GOOGLE_VOICES[lang] || GOOGLE_VOICES['th-TH']; }
 const today = new Date().toDateString();
 if (lastDate !== today) { dailyChars = 0; localStorage.setItem('vt_date', today); localStorage.setItem('vt_chars','0'); }
 
@@ -654,58 +704,73 @@ function detectGender(name) {
 function loadVoices() {
   const allVoices = speechSynthesis.getVoices();
   const container = document.getElementById('voice-cards');
+  const langPrefix = currentLang.split('-')[0];
 
-  // Filter by selected language prefix (e.g. 'th', 'zh', 'en')
-  let voices = allVoices.filter(v => v.lang.startsWith(currentLang.split('-')[0]));
-
-  if (voices.length === 0) {
-    container.innerHTML = `<span style="font-size:12px;color:var(--sub);padding:8px;">${t('noVoice')}<br><small>Try Chrome or Edge browser for the best voice selection.</small></span>`;
-    return;
+  // --- Browser voices ---
+  let voices = allVoices.filter(v => v.lang.startsWith(langPrefix));
+  if (voices.length > 0) {
+    const seen = new Set();
+    voices = voices.filter(v => { const k = v.name; if (seen.has(k)) return false; seen.add(k); return true; });
+    voices = voices.map(v => { v._gender = detectGender(v.name||''); v._source = 'browser'; return v; });
   }
 
-  // Deduplicate by name
-  const seen = new Set();
-  voices = voices.filter(v => { const k = v.name; if (seen.has(k)) return false; seen.add(k); return true; });
+  // --- Google Cloud TTS voices (premium only) ---
+  let gVoices = [];
+  if (isMember()) {
+    gVoices = getGoogleVoices(currentLang).map(function(gv, i) {
+      return { name: gv.name, _gender: gv.gender, _source: 'google', _label: gv.label, _tier: gv.tier, lang: currentLang };
+    });
+  }
 
-  // Tag each voice with gender (keep original voice object, add _gender)
-  voices = voices.map(v => { v._gender = detectGender(v.name||''); return v; });
+  // Gender filter
+  let filtered = voices.concat(gVoices);
+  if (currentGender === 'female') filtered = filtered.filter(v => v._gender === 'female');
+  else filtered = filtered.filter(v => v._gender === 'male');
+  if (filtered.length === 0) filtered = voices.concat(gVoices);
 
-  // Gender filter: STRICT — only show confirmed matching gender
-  // If a voice is 'unknown', it won't appear in either list (prevents mixing)
-  let filtered = voices;
-  if (currentGender === 'female') filtered = voices.filter(v => v._gender === 'female');
-  else filtered = voices.filter(v => v._gender === 'male');
-  // If no voices match, fall back to ALL (better than showing nothing)
-  if (filtered.length === 0) filtered = voices;
-
+  // Render
   const genderEmoji = { female: '👩', male: '👨', unknown: '🎤' };
+  const T = uiText[currentUI] || uiText['th'];
 
-  container.innerHTML = filtered.map((v,i) => {
-    const emoji = genderEmoji[v._gender]||'🎤';
+  container.innerHTML = filtered.map((v, i) => {
+    const emoji = v._source === 'google' ? '🤖' : (genderEmoji[v._gender]||'🎤');
+    const label = v._label || v.name.substring(0, 20);
+    const sub = v._source === 'google'
+      ? 'Google AI · ' + (v._tier === 'neural2' ? 'HD' : 'Standard')
+      : (v.lang + ' · ' + (v._gender==='female'?T.genderLabelF:v._gender==='male'?T.genderLabelM:T.genderLabelU));
+    const googleTag = v._source === 'google' ? ' data-google="true"' : '';
     const active = (selectedVoice && selectedVoice.name === v.name) ? ' active' : (i===0&&!selectedVoice ? ' active' : '');
-    return `<div class="voice-card${active}" data-name="${v.name.replace(/"/g,'&quot;')}" onclick="selectVoice(this,'${v.name.replace(/'/g,"\\'")}')">
-      <span class="v-name">${emoji} ${v.name.substring(0,20)}</span>
-      <span class="v-lang">${v.lang} · ${v._gender==='female'?(uiText[currentUI]||uiText['th']).genderLabelF : (v._gender==='male' ? (uiText[currentUI]||uiText['th']).genderLabelM : (uiText[currentUI]||uiText['th']).genderLabelU)}</span>
-    </div>`;
+    return '<div class="voice-card' + active + '" data-name="' + v.name.replace(/"/g, '&quot;') + '"' + googleTag + ' onclick="selectVoice(this,\'' + v.name.replace(/'/g, "\\'") + '\')">'
+      + '<span class="v-name">' + emoji + ' ' + label + '</span>'
+      + '<span class="v-lang">' + sub + '</span>'
+      + '</div>';
   }).join('');
 
   // Set selected voice if none
   if (!selectedVoice || !filtered.find(v => v.name === selectedVoice.name)) {
-    selectedVoice = filtered[0];
+    selectedVoice = filtered[0] || null;
   }
 
-  // Debug: log all voice names and detected genders
-  console.group('VoiceThai — Voice Detection');
+  // Debug
+  console.group('VoiceThai — Voice Detection' + (isMember() ? ' [PREMIUM]' : ''));
   console.log('Language:', currentLang, '| Filter:', currentGender);
-  voices.forEach(function(v){console.log(v._gender.toUpperCase().substring(0,1)+' '+v.name+' ['+v.lang+'] → '+v._gender);});
+  filtered.forEach(function(v){ console.log((v._source==='google'?'G':'B')+' '+v._gender.toUpperCase().substring(0,1)+' '+v.name+' → '+v._gender); });
   console.groupEnd();
 }
 
 function selectVoice(el, name) {
   document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  const voices = speechSynthesis.getVoices();
-  selectedVoice = voices.find(v => v.name === name) || voices[0];
+  // Check if it's a Google Cloud voice
+  if (el.getAttribute('data-google') === 'true') {
+    var gvList = getGoogleVoices(currentLang);
+    selectedVoice = gvList.find(function(gv){ return gv.name === name; }) || gvList[0];
+    if (selectedVoice) { selectedVoice._source = 'google'; selectedVoice._gender = selectedVoice.gender; }
+  } else {
+    var voices = speechSynthesis.getVoices();
+    selectedVoice = voices.find(function(v){ return v.name === name; }) || voices[0];
+    if (selectedVoice) { selectedVoice._source = 'browser'; selectedVoice._gender = detectGender(selectedVoice.name||''); }
+  }
 }
 
 function selectGender(gender) {
@@ -741,7 +806,7 @@ document.getElementById('text-input').addEventListener('input', function() {
   document.getElementById('char-num').textContent = this.value.length;
 });
 
-// ============ GENERATE ============
+// ============ GENERATE (Browser TTS or Google Cloud TTS) ============
 function generateSpeech() {
   const text = document.getElementById('text-input').value.trim();
   if (!text) { showToast(t('emptyText')); return; }
@@ -749,13 +814,47 @@ function generateSpeech() {
 
   const btn = document.getElementById('btn-generate');
   btn.classList.add('loading'); btn.disabled = true;
-  speechSynthesis.cancel();
 
+  // ---- Premium path: Google Cloud TTS ----
+  if (isMember() && selectedVoice && selectedVoice._source === 'google') {
+    var url = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + GCLOUD_API_KEY;
+    var body = JSON.stringify({
+      input: { text: text },
+      voice: { languageCode: currentLang, name: selectedVoice.name },
+      audioConfig: { audioEncoding: 'MP3', speakingRate: parseFloat(document.getElementById('speed-slider').value) }
+    });
+    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        btn.classList.remove('loading'); btn.disabled = false;
+        if (data.audioContent) {
+          var audioBytes = Uint8Array.from(atob(data.audioContent), function(c) { return c.charCodeAt(0); });
+          var blob = new Blob([audioBytes], { type: 'audio/mp3' });
+          var audioEl = document.getElementById('audio-el');
+          audioEl.src = URL.createObjectURL(blob);
+          document.getElementById('audio-player').classList.add('show');
+          audioEl.play();
+          dailyChars += text.length;
+          localStorage.setItem('vt_chars', dailyChars.toString());
+          showToast('🤖 AI เสียงคุณภาพสูง — Google Cloud');
+        } else {
+          showToast('⚠️ ' + (data.error ? data.error.message : 'Unknown error'));
+        }
+      })
+      .catch(function(err) {
+        btn.classList.remove('loading'); btn.disabled = false;
+        showToast('⚠️ Network error — ' + err.message);
+      });
+    return;
+  }
+
+  // ---- Free path: Browser SpeechSynthesis ----
+  speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = currentLang;
   utterance.rate = parseFloat(document.getElementById('speed-slider').value);
   utterance.pitch = 1;
-  if (selectedVoice) utterance.voice = selectedVoice;
+  if (selectedVoice && selectedVoice._source !== 'google') utterance.voice = selectedVoice;
 
   utterance.onend = function() {
     btn.classList.remove('loading'); btn.disabled = false;
@@ -989,7 +1088,11 @@ if (window.location.search.includes('admin')) {
     var data = JSON.parse(localStorage.getItem('vt_upgrade_clicks')||'{}');
     var box = document.createElement('div');
     box.style.cssText = 'position:fixed;top:16px;right:16px;background:#1d1d1f;color:white;padding:16px 20px;border-radius:12px;font-size:13px;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.3);line-height:1.8;';
-    box.innerHTML = '<strong>📊 Admin</strong><br>โปร (฿99): '+(data.pro?.clicks||0)+' clicks<br>แม็กซ์ (฿179): '+(data.max?.clicks||0)+' clicks<br>รวม: '+(data.total||0)+' <br><small style="opacity:.5">'+window.location.href+'</small>';
+    box.innerHTML = '<strong>📊 Admin</strong><br>โปร (฿99): '+(data.pro?.clicks||0)+' clicks<br>แม็กซ์ (฿179): '+(data.max?.clicks||0)+' clicks<br>รวม: '+(data.total||0)
+      +' <br><span style="color:#ff9f0a;">👑 Premium: '+(isMember()?'✅ ON':'❌ OFF')+'</span>'
+      +' <br><button onclick="enablePremium()" style="margin:4px 2px;padding:4px 10px;border-radius:6px;border:none;background:#0071e3;color:white;cursor:pointer;font-size:11px;">เปิด Premium</button>'
+      +'<button onclick="disablePremium()" style="margin:4px 2px;padding:4px 10px;border-radius:6px;border:none;background:#666;color:white;cursor:pointer;font-size:11px;">ปิด Premium</button>'
+      +'<br><small style="opacity:.5">'+window.location.href+'</small>';
     document.body.appendChild(box);
   });
 }
