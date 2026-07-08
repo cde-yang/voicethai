@@ -733,8 +733,9 @@ function loadVoices() {
   container.innerHTML = filtered.map((v, i) => {
     const emoji = v._source === 'google' ? '🤖' : (genderEmoji[v._gender]||'🎤');
     const label = v._label || v.name.substring(0, 20);
+    var tierLabel = v._tier === 'wavenet' ? 'WaveNet HD' : (v._tier === 'neural2' ? 'Neural2 HD' : 'Standard');
     const sub = v._source === 'google'
-      ? 'Google AI · ' + (v._tier === 'neural2' ? 'HD' : 'Standard')
+      ? 'Google AI · ' + tierLabel
       : (v.lang + ' · ' + (v._gender==='female'?T.genderLabelF:v._gender==='male'?T.genderLabelM:T.genderLabelU));
     const googleTag = v._source === 'google' ? ' data-google="true"' : '';
     const active = (selectedVoice && selectedVoice.name === v.name) ? ' active' : (i===0&&!selectedVoice ? ' active' : '');
