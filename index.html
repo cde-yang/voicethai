@@ -297,7 +297,7 @@ body {
         <input type="file" id="file-upload" accept=".txt,.pdf" style="display:none;" onchange="handleFileUpload()">
       </label>
       <input type="text" id="url-input" placeholder="🌐 วางลิงก์เว็บไซต์ที่นี่..." style="flex:1;min-width:160px;padding:7px 14px;border:1px solid var(--border);border-radius:100px;font-size:12px;font-family:inherit;color:var(--text);background:var(--card);outline:none;" onkeydown="if(event.key==='Enter')fetchURL()">
-      <button onclick="fetchURL()" style="padding:7px 16px;border:1px solid var(--border);border-radius:100px;cursor:pointer;font-size:12px;color:var(--sub);background:var(--card);font-family:inherit;white-space:nowrap;">ดึงข้อความ</button>
+      <button onclick="fetchURL()" style="padding:7px 16px;border:1px solid var(--border);border-radius:100px;cursor:pointer;font-size:12px;color:var(--sub);background:var(--card);font-family:inherit;white-space:nowrap;" id="url-fetch-btn">ดึงข้อความ</button>
     </div>
 
     <textarea id="text-input" placeholder="พิมพ์ข้อความที่นี่..."></textarea>
@@ -324,7 +324,7 @@ body {
 
     <!-- Speed -->
     <div class="speed-row">
-      ⏱ ความเร็ว:
+      <span id="speed-text">⏱ ความเร็ว:</span>
       <input type="range" id="speed-slider" min="0.5" max="1.8" step="0.1" value="1">
       <span id="speed-label" style="font-weight:700;">1×</span>
     </div>
@@ -350,28 +350,13 @@ body {
 
   <!-- FAQ -->
   <section class="faq-section" style="max-width:900px;margin:0 auto 32px;padding:0 16px;">
-    <h2 style="font-size:22px;font-weight:700;text-align:center;margin:32px 0 16px;">❓ คำถามที่พบบ่อย</h2>
-    <div style="display:grid;gap:8px;">
-      <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
-        <summary style="font-weight:600;font-size:14px;color:var(--text);">แปลงข้อความเป็นเสียง MP3 ฟรีได้ไหม?</summary>
-        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">เวอร์ชันฟรีสามารถฟังเสียงในเบราว์เซอร์ได้ทันที หากต้องการดาวน์โหลดไฟล์ MP3 ต้องสมัครสมาชิกพรีเมียม ฿99/เดือน</p>
-      </details>
-      <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
-        <summary style="font-weight:600;font-size:14px;color:var(--text);">ต้องสมัครสมาชิกก่อนใช้หรือไม่?</summary>
-        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">ไม่ต้อง! เปิดเว็บแล้วใช้ได้ทันที ไม่ต้องสมัคร ไม่ต้องล็อกอิน ฟรี 2000 ตัวอักษรต่อวัน</p>
-      </details>
-      <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
-        <summary style="font-weight:600;font-size:14px;color:var(--text);">รองรับภาษาอะไรบ้าง?</summary>
-        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">รองรับ 5 ภาษา: ไทย จีน อังกฤษ เวียดนาม อินโดนีเซีย มีทั้งเสียงผู้ชายและผู้หญิง</p>
-      </details>
-      <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
-        <summary style="font-weight:600;font-size:14px;color:var(--text);">ใช้งานเชิงพาณิชย์ได้หรือไม่?</summary>
-        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">เวอร์ชันพรีเมียมอนุญาตให้ใช้งานเชิงพาณิชย์ได้ (TikTok, YouTube, โฆษณา ฯลฯ) เวอร์ชันฟรีใช้สำหรับทดลองเท่านั้น</p>
-      </details>
-      <details style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;">
-        <summary style="font-weight:600;font-size:14px;color:var(--text);">เสียงที่ได้ฟังดูเป็นธรรมชาติหรือไม่?</summary>
-        <p style="margin-top:10px;font-size:13px;color:var(--sub);line-height:1.7;">เวอร์ชันฟรีใช้ระบบเสียงของเบราว์เซอร์ เวอร์ชันพรีเมียมใช้ AI เสียงคุณภาพสูง ฟังดูเป็นธรรมชาติมากกว่า</p>
-      </details>
+    <h2 id="faq-title" style="font-size:22px;font-weight:700;text-align:center;margin:32px 0 16px;">❓ คำถามที่พบบ่อย</h2>
+    <div style="display:grid;gap:8px;" id="faq-list">
+      <details data-faq="0"><summary>แปลงข้อความเป็นเสียง MP3 ฟรีได้ไหม?</summary><p>เวอร์ชันฟรีสามารถฟังเสียงในเบราว์เซอร์ได้ทันที หากต้องการดาวน์โหลดไฟล์ MP3 ต้องสมัครสมาชิกพรีเมียม ฿99/เดือน</p></details>
+      <details data-faq="1"><summary>ต้องสมัครสมาชิกก่อนใช้หรือไม่?</summary><p>ไม่ต้อง! เปิดเว็บแล้วใช้ได้ทันที ไม่ต้องสมัคร ไม่ต้องล็อกอิน ฟรี 2000 ตัวอักษรต่อวัน</p></details>
+      <details data-faq="2"><summary>รองรับภาษาอะไรบ้าง?</summary><p>รองรับ 5 ภาษา: ไทย จีน อังกฤษ เวียดนาม อินโดนีเซีย มีทั้งเสียงผู้ชายและผู้หญิง</p></details>
+      <details data-faq="3"><summary>ใช้งานเชิงพาณิชย์ได้หรือไม่?</summary><p>เวอร์ชันพรีเมียมอนุญาตให้ใช้งานเชิงพาณิชย์ได้ (TikTok, YouTube, โฆษณา ฯลฯ) เวอร์ชันฟรีใช้สำหรับทดลองเท่านั้น</p></details>
+      <details data-faq="4"><summary>เสียงที่ได้ฟังดูเป็นธรรมชาติหรือไม่?</summary><p>เวอร์ชันฟรีใช้ระบบเสียงของเบราว์เซอร์ เวอร์ชันพรีเมียมใช้ AI เสียงคุณภาพสูง ฟังดูเป็นธรรมชาติมากกว่า</p></details>
     </div>
   </section>
 
@@ -499,11 +484,101 @@ const placeholders = {
   'id-ID': 'Ketik teks bahasa Indonesia di sini...\n\nContoh: Halo semuanya, selamat datang di alat text-to-speech gratis.',
 };
 
-// UI text per language
+// UI text per language — ALL strings covered
 const uiText = {
-  'th': { heroTitle: 'แปลง<span>ข้อความเป็นเสียง</span>หลายภาษา', heroSub: 'ฟรี ไม่จำกัด ไม่ต้องสมัคร เลือกเสียงชาย/หญิง รองรับไทย จีน อังกฤษ เวียดนาม', chars: 'ตัวอักษร', freeLimit: '🆓 ฟรี', perDay: 'ตัวอักษร/วัน', genBtn: '🔊 สร้างเสียง', genderAll: 'ทั้งหมด', genderFemale: 'เสียงผู้หญิง', genderMale: 'เสียงผู้ชาย', speed: 'ความเร็ว', listening: 'กำลังฟังเสียง...', error: '⚠️ เกิดข้อผิดพลาด กรุณาลองใหม่', noVoice: '⚠️ ไม่พบเสียงสำหรับภาษานี้ในเบราว์เซอร์ — กรุณาใช้ Chrome หรือ Edge', emptyText: '⚠️ กรุณาพิมพ์ข้อความก่อน', limitHit: '⚠️ เกินขีดจำกัดฟรีวันนี้ อัปเกรดเป็นพรีเมียมเพื่อใช้งานไม่จำกัด' },
-  'zh': { heroTitle: '多语言<span>文字转语音</span>', heroSub: '免费 · 不限次数 · 无需注册 · 男声/女声可选 · 支持中文、泰语、英语等', chars: '字', freeLimit: '🆓 免费', perDay: '字/天', genBtn: '🔊 生成语音', genderAll: '全部', genderFemale: '女声', genderMale: '男声', speed: '速度', listening: '正在播放...', error: '⚠️ 出错了，请重试', noVoice: '⚠️ 浏览器未找到中文语音 — 请使用 Chrome 或 Edge', emptyText: '⚠️ 请先输入文字', limitHit: '⚠️ 已超出今日免费额度，升级会员即可无限使用' },
-  'en': { heroTitle: '<span>Text to Speech</span> Multi-Language', heroSub: 'Free · Unlimited · No Registration · Male/Female voices · Thai, Chinese, English & more', chars: 'chars', freeLimit: '🆓 Free', perDay: 'chars/day', genBtn: '🔊 Generate Voice', genderAll: 'All', genderFemale: 'Female', genderMale: 'Male', speed: 'Speed', listening: 'Playing audio...', error: '⚠️ Error, please try again', noVoice: '⚠️ No voice found for this language — Please use Chrome or Edge', emptyText: '⚠️ Please enter some text first', limitHit: '⚠️ Daily free limit reached. Upgrade to Premium for unlimited use.' }
+  'th': {
+    heroTitle: 'แปลง<span>ข้อความเป็นเสียง</span>หลายภาษา', heroSub: 'ฟรี ไม่จำกัด ไม่ต้องสมัคร เลือกเสียงชาย/หญิง รองรับไทย จีน อังกฤษ เวียดนาม',
+    badgeFree: '✅ ฟรีตลอดไป', badgeNoLogin: '🚀 ไม่ต้องสมัคร', badgeMulti: '🌏 หลายภาษา', badgeGender: '♂️♀️ เสียงชาย/หญิง',
+    uploadLabel: '📁 อัปโหลด TXT', urlPlaceholder: '🌐 วางลิงก์เว็บไซต์ที่นี่...', urlBtn: 'ดึงข้อความ',
+    chars: 'ตัวอักษร', freeLimit: '🆓 ฟรี', perDay: 'ตัวอักษร/วัน',
+    genderAll: 'ทั้งหมด', genderFemale: 'เสียงผู้หญิง', genderMale: 'เสียงผู้ชาย',
+    speedText: '⏱ ความเร็ว:',
+    genBtn: '🔊 สร้างเสียง',
+    downloadBtn: '📥 ดาวน์โหลด MP3', downloadHint: 'AI เสียงคุณภาพสูง',
+    audioHint: '⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง พร้อมดาวน์โหลด MP3 <a href="#tiers" style="color:var(--accent);">อัปเกรด</a>',
+    listening: '🔊 กำลังฟังเสียง...', error: '⚠️ เกิดข้อผิดพลาด กรุณาลองใหม่', noVoice: '⚠️ ไม่พบเสียงสำหรับภาษานี้ในเบราว์เซอร์ — กรุณาใช้ Chrome หรือ Edge', emptyText: '⚠️ กรุณาพิมพ์ข้อความก่อน', limitHit: '⚠️ เกินขีดจำกัดฟรีวันนี้ อัปเกรดเป็นพรีเมียมเพื่อใช้งานไม่จำกัด',
+    faqTitle: '❓ คำถามที่พบบ่อย',
+    faqs: [
+      {q:'แปลงข้อความเป็นเสียง MP3 ฟรีได้ไหม?',a:'เวอร์ชันฟรีสามารถฟังเสียงในเบราว์เซอร์ได้ทันที หากต้องการดาวน์โหลดไฟล์ MP3 ต้องสมัครสมาชิกพรีเมียม ฿99/เดือน'},
+      {q:'ต้องสมัครสมาชิกก่อนใช้หรือไม่?',a:'ไม่ต้อง! เปิดเว็บแล้วใช้ได้ทันที ไม่ต้องสมัคร ไม่ต้องล็อกอิน ฟรี 2000 ตัวอักษรต่อวัน'},
+      {q:'รองรับภาษาอะไรบ้าง?',a:'รองรับ 5 ภาษา: ไทย จีน อังกฤษ เวียดนาม อินโดนีเซีย มีทั้งเสียงผู้ชายและผู้หญิง'},
+      {q:'ใช้งานเชิงพาณิชย์ได้หรือไม่?',a:'เวอร์ชันพรีเมียมอนุญาตให้ใช้งานเชิงพาณิชย์ได้ (TikTok, YouTube, โฆษณา ฯลฯ) เวอร์ชันฟรีใช้สำหรับทดลองเท่านั้น'},
+      {q:'เสียงที่ได้ฟังดูเป็นธรรมชาติหรือไม่?',a:'เวอร์ชันฟรีใช้ระบบเสียงของเบราว์เซอร์ เวอร์ชันพรีเมียมใช้ AI เสียงคุณภาพสูง ฟังดูเป็นธรรมชาติมากกว่า'}
+    ],
+    genderLabelF: 'หญิง', genderLabelM: 'ชาย', genderLabelU: 'ทั่วไป',
+    tierSectionTitle: '💎 เลือกแผนที่เหมาะกับคุณ',
+    tierFreeName: '🆓 ฟรี', tierFreePeriod: 'ตลอดไป', tierFreeBtn: 'เริ่มใช้ฟรี',
+    tierFreeItems: ['2000 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'],
+    tierProName: '👑 พรีเมียม', tierProPopular: '⭐ นิยมที่สุด', tierProBtn: 'อัปเกรดเลย — ฿99/เดือน',
+    tierProItems: ['<strong>5,000 ตัวอักษร/วัน</strong>','20+ เสียงพรีเมียม','ดาวน์โหลด MP3 ไม่จำกัด','เสียงคุณภาพ HD','ใช้งานเชิงพาณิชย์ได้'],
+    tierMaxName: '🚀 แม็กซ์', tierMaxBtn: 'อัปเกรดเลย — ฿179/เดือน',
+    tierMaxItems: ['<strong>10,000 ตัวอักษร/วัน</strong>','50+ เสียง AI คุณภาพสูง','ดาวน์โหลด MP3 ไม่จำกัด','เสียงฟังดูเป็นธรรมชาติ','ประมวลผลเร็วที่สุด'],
+    footer1: '🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร',
+    footer2: 'รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย',
+    fbTitle: '💬 ส่งความคิดเห็น', fbDesc: 'บอกเราว่ามีอะไรที่ควรปรับปรุง หรือฟีเจอร์ที่คุณอยากได้', fbPlaceholder: 'พิมพ์ความคิดเห็นที่นี่...', fbCancel: 'ยกเลิก', fbSend: '📩 ส่ง', fbThanksTitle: 'ขอบคุณสำหรับความคิดเห็น!', fbThanksDesc: 'เราจะนำไปปรับปรุงให้ดียิ่งขึ้น', fbBtn: '💬 ความคิดเห็น'
+  },
+  'zh': {
+    heroTitle: '多语言<span>文字转语音</span>', heroSub: '免费 · 不限次数 · 无需注册 · 男声/女声可选 · 支持中文、泰语、英语等',
+    badgeFree: '✅ 永久免费', badgeNoLogin: '🚀 无需注册', badgeMulti: '🌏 多语言', badgeGender: '♂️♀️ 男声/女声',
+    uploadLabel: '📁 上传 TXT', urlPlaceholder: '🌐 粘贴网站链接...', urlBtn: '提取文字',
+    chars: '字', freeLimit: '🆓 免费', perDay: '字/天',
+    genderAll: '全部', genderFemale: '女声', genderMale: '男声',
+    speedText: '⏱ 速度：',
+    genBtn: '🔊 生成语音',
+    downloadBtn: '📥 下载 MP3', downloadHint: 'AI 高品质语音',
+    audioHint: '⚠️ 免费版使用浏览器语音 — 付费版使用AI高品质语音 <a href="#tiers" style="color:var(--accent);">升级</a>',
+    listening: '🔊 正在播放...', error: '⚠️ 出错了，请重试', noVoice: '⚠️ 浏览器未找到中文语音 — 请使用 Chrome 或 Edge', emptyText: '⚠️ 请先输入文字', limitHit: '⚠️ 已超出今日免费额度，升级会员即可无限使用',
+    faqTitle: '❓ 常见问题',
+    faqs: [
+      {q:'可以免费下载 MP3 吗？',a:'免费版可以在浏览器直接收听。如需下载 MP3 文件，需开通会员 ฿99/月（约 ¥20）。'},
+      {q:'是否需要注册？',a:'不需要！打开网站即可使用，无需注册、无需登录。每天免费 2000 字。'},
+      {q:'支持哪些语言？',a:'支持 5 种语言：泰语、中文、英语、越南语、印尼语，均有男声和女声可选。'},
+      {q:'可以商业使用吗？',a:'会员版允许商业用途（如 TikTok、YouTube、广告等），免费版仅供试用。'},
+      {q:'语音听起来自然吗？',a:'免费版使用浏览器语音引擎，会员版采用 Google AI 语音，音质更加自然流畅。'}
+    ],
+    genderLabelF: '女', genderLabelM: '男', genderLabelU: '通用',
+    tierSectionTitle: '💎 选择适合你的方案',
+    tierFreeName: '🆓 免费', tierFreePeriod: '永久', tierFreeBtn: '开始免费使用',
+    tierFreeItems: ['2000 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音'],
+    tierProName: '👑 高级版', tierProPopular: '⭐ 最受欢迎', tierProBtn: '立即升级 — ฿99/月',
+    tierProItems: ['<strong>5,000 字/天</strong>','20+ 高级AI声音','无限下载 MP3','真人般自然','商业用途可用'],
+    tierMaxName: '🚀 旗舰版', tierMaxBtn: '立即升级 — ฿179/月',
+    tierMaxItems: ['<strong>10,000 字/天</strong>','50+ 高级AI声音','无限下载 MP3','真人般自然','最快处理速度'],
+    footer1: '🎙️ <strong>VoiceThai</strong> — 免费文字转语音，无需注册',
+    footer2: '支持泰语 · 中文 · 英语 · 越南语 · 印尼语',
+    fbTitle: '💬 发送反馈', fbDesc: '告诉我们哪里需要改进，或者你想要什么功能', fbPlaceholder: '在这里输入你的意见...', fbCancel: '取消', fbSend: '📩 发送', fbThanksTitle: '感谢你的反馈！', fbThanksDesc: '我们会持续改进', fbBtn: '💬 意见反馈'
+  },
+  'en': {
+    heroTitle: '<span>Text to Speech</span> Multi-Language', heroSub: 'Free · Unlimited · No Registration · Male/Female voices · Thai, Chinese, English & more',
+    badgeFree: '✅ Free Forever', badgeNoLogin: '🚀 No Registration', badgeMulti: '🌏 Multi-Language', badgeGender: '♂️♀️ Male/Female',
+    uploadLabel: '📁 Upload TXT', urlPlaceholder: '🌐 Paste website URL here...', urlBtn: 'Fetch Text',
+    chars: 'chars', freeLimit: '🆓 Free', perDay: 'chars/day',
+    genderAll: 'All', genderFemale: 'Female', genderMale: 'Male',
+    speedText: '⏱ Speed:',
+    genBtn: '🔊 Generate Voice',
+    downloadBtn: '📥 Download MP3', downloadHint: 'AI High-Quality Voice',
+    audioHint: '⚠️ Free tier uses browser speech — Premium uses high-quality AI voices <a href="#tiers" style="color:var(--accent);">Upgrade</a>',
+    listening: '🔊 Playing audio...', error: '⚠️ Error, please try again', noVoice: '⚠️ No voice found — Please use Chrome or Edge', emptyText: '⚠️ Please enter some text first', limitHit: '⚠️ Daily free limit reached. Upgrade to Premium.',
+    faqTitle: '❓ Frequently Asked Questions',
+    faqs: [
+      {q:'Can I download MP3 for free?',a:'Free tier allows instant listening in the browser. MP3 download requires Premium membership at ฿99/month (~$2.75).'},
+      {q:'Do I need to register?',a:'No! Open the site and use it immediately. No sign-up, no login. 2,000 characters/day free.'},
+      {q:'Which languages are supported?',a:'5 languages: Thai, Chinese, English, Vietnamese, Indonesian — with male and female voices.'},
+      {q:'Can I use it commercially?',a:'Premium tier allows commercial use (TikTok, YouTube, ads, etc.). Free tier is for trial only.'},
+      {q:'Do the voices sound natural?',a:'Free tier uses browser speech engine. Premium uses Google AI voices with much more natural quality.'}
+    ],
+    genderLabelF: 'Female', genderLabelM: 'Male', genderLabelU: 'General',
+    tierSectionTitle: '💎 Choose Your Plan',
+    tierFreeName: '🆓 Free', tierFreePeriod: 'Forever', tierFreeBtn: 'Start Free',
+    tierFreeItems: ['2000 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices'],
+    tierProName: '👑 Premium', tierProPopular: '⭐ Most Popular', tierProBtn: 'Upgrade Now — ฿99/month',
+    tierProItems: ['<strong>5,000 chars/day</strong>','20+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Commercial use allowed'],
+    tierMaxName: '🚀 Max', tierMaxBtn: 'Upgrade Now — ฿179/month',
+    tierMaxItems: ['<strong>10,000 chars/day</strong>','50+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Fastest processing'],
+    footer1: '🎙️ <strong>VoiceThai</strong> — Free Text to Speech, No Registration',
+    footer2: 'Thai · Chinese · English · Vietnamese · Indonesian',
+    fbTitle: '💬 Send Feedback', fbDesc: 'Tell us what to improve or what features you want', fbPlaceholder: 'Type your feedback here...', fbCancel: 'Cancel', fbSend: '📩 Send', fbThanksTitle: 'Thanks for your feedback!', fbThanksDesc: 'We will keep improving', fbBtn: '💬 Feedback'
+  }
 };
 
 let currentUI = 'th';
@@ -558,7 +633,7 @@ function loadVoices() {
     const active = (selectedVoice && selectedVoice.name === v.name) ? ' active' : (i===0&&!selectedVoice ? ' active' : '');
     return `<div class="voice-card${active}" data-name="${v.name.replace(/"/g,'&quot;')}" onclick="selectVoice(this,'${v.name.replace(/'/g,"\\'")}')">
       <span class="v-name">${emoji} ${v.name.substring(0,20)}</span>
-      <span class="v-lang">${v.lang} · ${v._gender==='female'?'หญิง':v._gender==='male'?'ชาย':'ทั่วไป'}</span>
+      <span class="v-lang">${v.lang} · ${v._gender==='female'?(uiText[currentUI]||uiText['th']).genderLabelF : (v._gender==='male' ? (uiText[currentUI]||uiText['th']).genderLabelM : (uiText[currentUI]||uiText['th']).genderLabelU)}</span>
     </div>`;
   }).join('');
 
@@ -641,102 +716,124 @@ function generateSpeech() {
   showToast('🔊 ' + t('listening'));
 }
 
-// ============ UI SWITCH ============
+// ============ UI SWITCH (unified — all strings from uiText) ============
 function switchUI(lang) {
   currentUI = lang;
-  // Update lang-switcher buttons via data-lang attribute
+  const T = uiText[lang] || uiText['th'];
+  // Lang-switcher buttons
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.remove('active');
     if (b.getAttribute('data-lang') === lang) b.classList.add('active');
   });
   // Hero
-  document.getElementById('hero-title').innerHTML = t('heroTitle');
-  document.getElementById('hero-sub').textContent = t('heroSub');
+  document.getElementById('hero-title').innerHTML = T.heroTitle;
+  document.getElementById('hero-sub').textContent = T.heroSub;
   // Badges
-  const badges = document.querySelectorAll('.badge');
-  if (badges[0]) badges[0].textContent = lang==='th'?'✅ ฟรีตลอดไป':lang==='zh'?'✅ 永久免费':'✅ Free Forever';
-  if (badges[1]) badges[1].textContent = lang==='th'?'🚀 ไม่ต้องสมัคร':lang==='zh'?'🚀 无需注册':'🚀 No Registration';
-  if (badges[2]) badges[2].textContent = lang==='th'?'🌏 หลายภาษา':lang==='zh'?'🌏 多语言':'🌏 Multi-Language';
-  if (badges[3]) badges[3].textContent = lang==='th'?'♂️♀️ เสียงชาย/หญิง':lang==='zh'?'♂️♀️ 男声/女声':'♂️♀️ Male/Female';
+  var badges = document.querySelectorAll('.badge');
+  if (badges[0]) badges[0].textContent = T.badgeFree;
+  if (badges[1]) badges[1].textContent = T.badgeNoLogin;
+  if (badges[2]) badges[2].textContent = T.badgeMulti;
+  if (badges[3]) badges[3].textContent = T.badgeGender;
+  // Toolbar
+  var lbl = document.getElementById('file-upload-label');
+  if (lbl) lbl.childNodes[lbl.childNodes.length-1].textContent = ' ' + T.uploadLabel;
+  var urlInp = document.getElementById('url-input');
+  if (urlInp) urlInp.placeholder = T.urlPlaceholder;
+  var urlBtn = document.getElementById('url-fetch-btn');
+  if (urlBtn) urlBtn.textContent = T.urlBtn;
   // Char count
-  document.querySelector('.char-row .free-limit').innerHTML = lang==='th'?'🆓 ฟรี <span id="limit-num">2000</span> ตัวอักษร/วัน':
-    lang==='zh'?'🆓 免费 <span id="limit-num">2000</span> 字/天':
-    '🆓 Free <span id="limit-num">2000</span> chars/day';
-  document.querySelector('.char-row span:first-child').innerHTML = '<span id="char-num">0</span> ' + (lang==='th'?'ตัวอักษร':lang==='zh'?'字':'chars');
+  var cl = document.querySelector('.char-row .free-limit');
+  if (cl) cl.innerHTML = T.freeLimit + ' <span id="limit-num">2000</span> ' + T.perDay;
+  var cs = document.querySelector('.char-row span:first-child');
+  if (cs) cs.innerHTML = '<span id="char-num">' + (document.getElementById('text-input').value.length) + '</span> ' + T.chars;
   // Gender buttons
-  const gbtns = document.querySelectorAll('.gender-btn');
-  const glabels = [{all:'🎤 ทั้งหมด',f:'👩 เสียงผู้หญิง',m:'👨 เสียงผู้ชาย'},{all:'🎤 全部',f:'👩 女声',m:'👨 男声'},{all:'🎤 All',f:'👩 Female',m:'👨 Male'}];
-  const gi = lang==='zh'?1:lang==='en'?2:0;
-  if (gbtns[0]) gbtns[0].innerHTML = `<span class="emoji">🎤</span> ${glabels[gi].all}`;
-  if (gbtns[1]) gbtns[1].innerHTML = `<span class="emoji">👩</span> ${glabels[gi].f}`;
-  if (gbtns[2]) gbtns[2].innerHTML = `<span class="emoji">👨</span> ${glabels[gi].m}`;
+  var gbtns = document.querySelectorAll('.gender-btn');
+  if (gbtns[0]) gbtns[0].innerHTML = '<span class="emoji">🎤</span> ' + T.genderAll;
+  if (gbtns[1]) gbtns[1].innerHTML = '<span class="emoji">👩</span> ' + T.genderFemale;
+  if (gbtns[2]) gbtns[2].innerHTML = '<span class="emoji">👨</span> ' + T.genderMale;
   // Speed
-  var speedLabel = document.getElementById("speed-label-text"); if (speedLabel) speedLabel.textContent = lang==="th"?"⏱ ความเร็ว: ":lang==="zh"?"⏱ 速度: ":"⏱ Speed: "; else document.querySelector(".speed-row").childNodes[0].textContent = lang==="th"?"⏱ ความเร็ว: ":lang==="zh"?"⏱ 速度: ":"⏱ Speed: ";
+  var st = document.getElementById('speed-text');
+  if (st) st.textContent = T.speedText;
   // Generate button
-  document.getElementById('btn-generate').querySelector('.btn-text').textContent = t('genBtn');
+  document.getElementById('btn-generate').querySelector('.btn-text').textContent = T.genBtn;
   // Textarea placeholder
-  document.getElementById('text-input').placeholder = placeholders[currentLang]||placeholders['th-TH'];
+  document.getElementById('text-input').placeholder = placeholders[currentLang] || placeholders['th-TH'];
+  // Download button + hint
+  var db = document.getElementById('btn-download');
+  if (db) db.textContent = T.downloadBtn;
+  var dh = document.getElementById('download-hint');
+  if (dh) dh.textContent = T.downloadHint;
+  // Audio hint
+  var hint = document.querySelector('#audio-player p');
+  if (hint) hint.innerHTML = T.audioHint;
+  // FAQ
+  updateFAQ();
   // Tier cards
   updateTierText();
   // Footer
   updateFooterText();
-  // Feedback button
+  // Feedback
   updateFeedbackLang();
-  // Audio hint
-  const hint = document.querySelector('#audio-player p');
-  if (hint) hint.innerHTML = lang==='th'?'⚠️ เสียงฟรีใช้ระบบของเบราว์เซอร์ — เสียงพรีเมียมใช้ AI คุณภาพสูง <a href="#tiers" style="color:var(--accent);">อัปเกรด</a>':
-    lang==='zh'?'⚠️ 免费版使用浏览器语音 — 付费版使用AI高品质语音 <a href="#tiers" style="color:var(--accent);">升级</a>':
-    '⚠️ Free tier uses browser speech — Premium uses high-quality AI voices <a href="#tiers" style="color:var(--accent);">Upgrade</a>';
+  // Refresh voice cards so gender labels are translated
+  loadVoices();
 }
 
-function updateTierText(){
-  const isZh = currentUI==='zh', isEn = currentUI==='en';
-  // Section title
-  document.querySelector('.tier-section h2').textContent = isZh?'💎 选择适合你的方案':isEn?'💎 Choose Your Plan':'💎 เลือกแผนที่เหมาะกับคุณ';
-  // Free card
-  const freeCard = document.querySelectorAll('.tier-card')[0];
+function updateFAQ() {
+  var T = uiText[currentUI] || uiText['th'];
+  var title = document.getElementById('faq-title');
+  if (title) title.textContent = T.faqTitle;
+  var items = document.querySelectorAll('#faq-list details');
+  items.forEach(function(el, i) {
+    if (T.faqs[i]) {
+      el.querySelector('summary').textContent = T.faqs[i].q;
+      el.querySelector('p').textContent = T.faqs[i].a;
+    }
+  });
+}
+
+function updateTierText() {
+  var T = uiText[currentUI] || uiText['th'];
+  var secTitle = document.querySelector('.tier-section h2');
+  if (secTitle) secTitle.textContent = T.tierSectionTitle;
+  // Free
+  var cards = document.querySelectorAll('.tier-card');
+  var freeCard = cards[0];
   if (freeCard) {
-    freeCard.querySelector('h3').textContent = isZh?'🆓 免费':isEn?'🆓 Free':'🆓 ฟรี';
-    freeCard.querySelector('.period').textContent = isZh?'永久':isEn?'Forever':'ตลอดไป';
-    const freeLis = freeCard.querySelectorAll('ul li');
-    const freeT = isZh?['2000 字/天','2 种基础声音','正常速度','无需注册','下载 MP3','高级声音']:
-      isEn?['2000 chars/day','2 basic voices','Normal speed','No registration','Download MP3','Premium voices']:
-      ['2000 ตัวอักษร/วัน','2 เสียงพื้นฐาน','ความเร็วปกติ','ไม่ต้องสมัครสมาชิก','ดาวน์โหลด MP3','เสียงพรีเมียม'];
-    freeLis.forEach((li,i)=>{ if(freeT[i]){ const chk=li.querySelector('.check'); li.innerHTML=(i<4?`<span class="check">✅</span> `:i<6?`<span style="color:#9ca3af;">❌</span> `:``)+freeT[i]; } });
-    freeCard.querySelector('.btn-tier').textContent = isZh?'开始免费使用':isEn?'Start Free':'เริ่มใช้ฟรี';
+    freeCard.querySelector('h3').textContent = T.tierFreeName;
+    freeCard.querySelector('.period').textContent = T.tierFreePeriod;
+    var freeLis = freeCard.querySelectorAll('ul li');
+    freeLis.forEach(function(li, i) {
+      if (T.tierFreeItems[i]) {
+        var prefix = i < 4 ? '<span class="check">✅</span> ' : '<span style="color:#9ca3af;">❌</span> ';
+        li.innerHTML = prefix + T.tierFreeItems[i];
+      }
+    });
+    freeCard.querySelector('.btn-tier').textContent = T.tierFreeBtn;
   }
-  // Pro card
-  const proCard = document.querySelectorAll('.tier-card')[1];
+  // Pro
+  var proCard = cards[1];
   if (proCard) {
-    proCard.querySelector('h3').textContent = isZh?'👑 高级版':isEn?'👑 Premium':'👑 พรีเมียม';
-    proCard.querySelector('.popular').textContent = isZh?'⭐ 最受欢迎':isEn?'⭐ Most Popular':'⭐ นิยมที่สุด';
-    proCard.querySelector('.period').textContent = '≈ ¥20 RMB · ≈ $2.75 USD';
-    const proLis = proCard.querySelectorAll('ul li');
-    const proT = isZh?['<strong>5,000 字/天</strong>','20+ 高级AI声音','无限下载 MP3','真人般自然','商业用途可用']:
-      isEn?['<strong>5,000 chars/day</strong>','20+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Commercial use allowed']:
-      ['<strong>5,000 ตัวอักษร/วัน</strong>','20+ เสียงพรีเมียม','ดาวน์โหลด MP3 ไม่จำกัด','เสียงคุณภาพ HD','ใช้งานเชิงพาณิชย์ได้'];
-    proLis.forEach((li,i)=>{ if(proT[i]) li.innerHTML=`<span class="check">✅</span> ${proT[i]}`; });
-    proCard.querySelector('.btn-tier').textContent = isZh?'立即升级 — ฿99/月':isEn?'Upgrade Now — ฿99/month':'อัปเกรดเลย — ฿99/เดือน';
+    proCard.querySelector('h3').textContent = T.tierProName;
+    proCard.querySelector('.popular').textContent = T.tierProPopular;
+    var proLis = proCard.querySelectorAll('ul li');
+    proLis.forEach(function(li, i) { if (T.tierProItems[i]) li.innerHTML = '<span class="check">✅</span> ' + T.tierProItems[i]; });
+    proCard.querySelector('.btn-tier').textContent = T.tierProBtn;
   }
-  // Max card
-  const maxCard = document.querySelectorAll('.tier-card')[2];
+  // Max
+  var maxCard = cards[2];
   if (maxCard) {
-    maxCard.querySelector('h3').textContent = isZh?'🚀 旗舰版':isEn?'🚀 Max':'🚀 แม็กซ์';
-    maxCard.querySelector('.period').textContent = '≈ ¥37 RMB · ≈ $5 USD';
-    const maxLis = maxCard.querySelectorAll('ul li');
-    const maxT = isZh?['<strong>10,000 字/天</strong>','50+ 高级AI声音','无限下载 MP3','真人般自然','最快处理速度']:
-      isEn?['<strong>10,000 chars/day</strong>','50+ premium AI voices','Unlimited MP3 download','Natural human-like voice','Fastest processing']:
-      ['<strong>10,000 ตัวอักษร/วัน</strong>','50+ เสียง AI คุณภาพสูง','ดาวน์โหลด MP3 ไม่จำกัด','เสียงฟังดูเป็นธรรมชาติ','ประมวลผลเร็วที่สุด'];
-    maxLis.forEach((li,i)=>{ if(maxT[i]) li.innerHTML=`<span class="check">✅</span> ${maxT[i]}`; });
-    maxCard.querySelector('.btn-tier').textContent = isZh?'立即升级 — ฿179/月':isEn?'Upgrade Now — ฿179/month':'อัปเกรดเลย — ฿179/เดือน';
+    maxCard.querySelector('h3').textContent = T.tierMaxName;
+    var maxLis = maxCard.querySelectorAll('ul li');
+    maxLis.forEach(function(li, i) { if (T.tierMaxItems[i]) li.innerHTML = '<span class="check">✅</span> ' + T.tierMaxItems[i]; });
+    maxCard.querySelector('.btn-tier').textContent = T.tierMaxBtn;
   }
 }
 
-function updateFooterText(){
-  const isZh=currentUI==='zh', isEn=currentUI==='en';
-  const footerPs = document.querySelectorAll('.footer p');
-  if (footerPs[0]) footerPs[0].innerHTML = isZh?'🎙️ <strong>VoiceThai</strong> — 免费文字转语音，无需注册':isEn?'🎙️ <strong>VoiceThai</strong> — Free Text to Speech, No Registration':'🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร';
-  if (footerPs[1]) footerPs[1].textContent = isZh?'支持泰语 · 中文 · 英语 · 越南语 · 印尼语':isEn?'Thai · Chinese · English · Vietnamese · Indonesian':'รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย';
+function updateFooterText() {
+  var T = uiText[currentUI] || uiText['th'];
+  var ps = document.querySelectorAll('.footer p');
+  if (ps[0]) ps[0].innerHTML = T.footer1;
+  if (ps[1]) ps[1].textContent = T.footer2;
 }
 
 // ============ DOWNLOAD MP3 ============
@@ -920,18 +1017,16 @@ window.sendFeedback = function() {
 };
 // Update feedback modal text per UI language
 function updateFeedbackLang() {
-  var isZh=currentUI==='zh', isEn=currentUI==='en';
-  document.getElementById('fb-title').textContent = isZh?'💬 发送反馈':isEn?'💬 Send Feedback':'💬 ส่งความคิดเห็น';
-  document.getElementById('fb-desc').textContent = isZh?'告诉我们哪里需要改进，或者你想要什么功能':isEn?'Tell us what to improve or what features you want':'บอกเราว่ามีอะไรที่ควรปรับปรุง หรือฟีเจอร์ที่คุณอยากได้';
-  document.getElementById('fb-text').placeholder = isZh?'在这里输入你的意见...':isEn?'Type your feedback here...':'พิมพ์ความคิดเห็นที่นี่...';
-  document.getElementById('fb-cancel').textContent = isZh?'取消':isEn?'Cancel':'ยกเลิก';
-  document.getElementById('fb-send').textContent = isZh?'📩 发送':isEn?'📩 Send':'📩 ส่ง';
-  document.getElementById('fb-thanks-title').textContent = isZh?'感谢你的反馈!':isEn?'Thanks for your feedback!':'ขอบคุณสำหรับความคิดเห็น!';
-  document.getElementById('fb-thanks-desc').textContent = isZh?'我们会持续改进':isEn?'We will keep improving':'เราจะนำไปปรับปรุงให้ดียิ่งขึ้น';
-  // Update floating button
-  document.getElementById('fb-btn').innerHTML = isZh?'💬 意见反馈':isEn?'💬 Feedback':'💬 ความคิดเห็น';
+  var T = uiText[currentUI] || uiText['th'];
+  document.getElementById('fb-title').textContent = T.fbTitle;
+  document.getElementById('fb-desc').textContent = T.fbDesc;
+  document.getElementById('fb-text').placeholder = T.fbPlaceholder;
+  document.getElementById('fb-cancel').textContent = T.fbCancel;
+  document.getElementById('fb-send').textContent = T.fbSend;
+  document.getElementById('fb-thanks-title').textContent = T.fbThanksTitle;
+  document.getElementById('fb-thanks-desc').textContent = T.fbThanksDesc;
+  document.getElementById('fb-btn').innerHTML = T.fbBtn;
 }
-// Call on page load
 updateFeedbackLang();
 
 // ============ KEYBOARD ============
