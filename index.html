@@ -795,11 +795,18 @@ function downloadMP3() {
     if (data.audioContent) {
       var audioBytes = Uint8Array.from(atob(data.audioContent), function(c) { return c.charCodeAt(0); });
       var blob = new Blob([audioBytes], { type: 'audio/mp3' });
+      // Also play the Google Cloud audio in the browser player for instant comparison
+      var audioUrl = URL.createObjectURL(blob);
+      var audioEl = document.getElementById('audio-el');
+      audioEl.src = audioUrl;
+      document.getElementById('audio-player').classList.add('show');
+      audioEl.play();
+      // Download the file
       var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
+      a.href = audioUrl;
       a.download = 'voicethai-' + currentLang + '.mp3';
       a.click();
-      showToast('✅ ดาวน์โหลด MP3 สำเร็จ — VoiceThai');
+      showToast('✅ ดาวน์โหลด MP3 + เล่นเสียง AI — VoiceThai');
     } else {
       console.error('TTS API error:', data);
       showToast('⚠️ ดาวน์โหลดล้มเหลว: ' + (data.error ? data.error.message : 'Unknown error'));
