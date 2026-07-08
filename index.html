@@ -481,38 +481,26 @@ window.disablePremium = function() { localStorage.removeItem('vt_member'); locat
 // These are the voices available via Google Cloud TTS API (real human-like AI voices)
 const GOOGLE_VOICES = {
   'th-TH': [
-    { name: 'th-TH-Neural2-A', label: 'Premwadee HD ♀', gender: 'female', tier: 'neural2' },
     { name: 'th-TH-Neural2-C', label: 'Kanya HD ♀', gender: 'female', tier: 'neural2' },
-    { name: 'th-TH-Standard-A', label: 'Achara ♀', gender: 'female', tier: 'standard' },
-    { name: 'th-TH-Standard-C', label: 'Niwat AI ♂', gender: 'male', tier: 'standard' },
+    { name: 'th-TH-Standard-A', label: 'Premwadee ♀', gender: 'female', tier: 'standard' },
   ],
   'zh-CN': [
-    { name: 'cmn-CN-Neural2-A', label: '小瑶 HD ♀', gender: 'female', tier: 'neural2' },
-    { name: 'cmn-CN-Neural2-B', label: '云健 HD ♂', gender: 'male', tier: 'neural2' },
-    { name: 'cmn-CN-Neural2-C', label: '云阳 HD ♂', gender: 'male', tier: 'neural2' },
-    { name: 'cmn-CN-Neural2-D', label: '小晖 HD ♀', gender: 'female', tier: 'neural2' },
     { name: 'cmn-CN-Standard-A', label: '小瑶 ♀', gender: 'female', tier: 'standard' },
     { name: 'cmn-CN-Standard-B', label: '云健 ♂', gender: 'male', tier: 'standard' },
     { name: 'cmn-CN-Standard-C', label: '云阳 ♂', gender: 'male', tier: 'standard' },
     { name: 'cmn-CN-Standard-D', label: '小晖 ♀', gender: 'female', tier: 'standard' },
   ],
   'en-US': [
-    { name: 'en-US-Neural2-A', label: 'Alice HD ♀', gender: 'female', tier: 'neural2' },
-    { name: 'en-US-Neural2-B', label: 'Bob HD ♂', gender: 'male', tier: 'neural2' },
-    { name: 'en-US-Neural2-C', label: 'Carol HD ♀', gender: 'female', tier: 'neural2' },
-    { name: 'en-US-Neural2-D', label: 'Dan HD ♂', gender: 'male', tier: 'neural2' },
     { name: 'en-US-Standard-A', label: 'Alice ♀', gender: 'female', tier: 'standard' },
     { name: 'en-US-Standard-B', label: 'Bob ♂', gender: 'male', tier: 'standard' },
+    { name: 'en-US-Standard-C', label: 'Carol ♀', gender: 'female', tier: 'standard' },
+    { name: 'en-US-Standard-D', label: 'Dan ♂', gender: 'male', tier: 'standard' },
   ],
   'vi-VN': [
-    { name: 'vi-VN-Neural2-A', label: 'Hoa My HD ♀', gender: 'female', tier: 'neural2' },
-    { name: 'vi-VN-Neural2-B', label: 'Nam Minh HD ♂', gender: 'male', tier: 'neural2' },
     { name: 'vi-VN-Standard-A', label: 'Hoa My ♀', gender: 'female', tier: 'standard' },
     { name: 'vi-VN-Standard-B', label: 'Nam Minh ♂', gender: 'male', tier: 'standard' },
   ],
   'id-ID': [
-    { name: 'id-ID-Neural2-A', label: 'Gadis HD ♀', gender: 'female', tier: 'neural2' },
-    { name: 'id-ID-Neural2-B', label: 'Ardi HD ♂', gender: 'male', tier: 'neural2' },
     { name: 'id-ID-Standard-A', label: 'Gadis ♀', gender: 'female', tier: 'standard' },
     { name: 'id-ID-Standard-B', label: 'Ardi ♂', gender: 'male', tier: 'standard' },
   ]
