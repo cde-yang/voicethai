@@ -468,7 +468,7 @@ let currentGender = 'female';
 let selectedVoice = null;
 let dailyChars = parseInt(localStorage.getItem('vt_chars')||'0');
 let lastDate = localStorage.getItem('vt_date')||'';
-const FREE_LIMIT = 2000;
+const FREE_LIMIT = 10000;
 const today = new Date().toDateString();
 if (lastDate !== today) { dailyChars = 0; localStorage.setItem('vt_date', today); localStorage.setItem('vt_chars','0'); }
 
