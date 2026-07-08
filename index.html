@@ -584,63 +584,58 @@ function t(key) { return (uiText[currentUI]||uiText['th'])[key]||key; }
 
 // ============ KNOWN VOICE GENDER MAP ============
 // Based on Windows/macOS/Chrome common voice names
-// Known voice gender lookup (exact substring match)
+// Known voice gender lookup — COMPREHENSIVE, checked before keyword fallback
 const KNOWN_VOICES = {
-  // Windows Chinese voices — Female
-  'microsoft huihui': 'female',
-  'huihui': 'female',
-  'microsoft xiaoxiao': 'female',
-  'xiaoxiao': 'female',
-  'microsoft yaoyao': 'female',
-  'yaoyao': 'female',
-  'microsoft hanhan': 'female',
-  'hanhan': 'female',
-  'microsoft xiaoyan': 'female',
-  'xiaoyan': 'female',
+  // === Microsoft Windows Chinese (Mandarin) — Female ===
+  'microsoft huihui': 'female', 'huihui': 'female',
+  'microsoft xiaoxiao': 'female', 'xiaoxiao': 'female',
+  'microsoft yaoyao': 'female', 'yaoyao': 'female',
+  'microsoft hanhan': 'female', 'hanhan': 'female',
+  'microsoft xiaobei': 'female', 'xiaobei': 'female',
+  'microsoft xiaoni': 'female', 'xiaoni': 'female',
   'microsoft xiaohan': 'female',
-  'microsoft xiaohan': 'female',
-  // Windows Chinese voices — Male
-  'microsoft kangkang': 'male',
-  'kangkang': 'male',
-  'microsoft yunyang': 'male',
-  'yunyang': 'male',
-  'microsoft yunjian': 'male',
-  'yunjian': 'male',
-  'microsoft yunxi': 'male',
-  'yunxi': 'male',
-  'microsoft yunye': 'male',
-  'yunye': 'male',
-  'microsoft yunfeng': 'male',
-  'yunfeng': 'male',
-  'microsoft yunhao': 'male',
-  'yunhao': 'male',
-  'microsoft yunxia': 'male',
-  'yunxia': 'male',
-  'microsoft yunze': 'male',
-  'yunze': 'male',
-  // Thai voices
-  'microsoft premwadee': 'female',
-  'microsoft achara': 'female',
-  'microsoft kanya': 'female',
-  'microsoft tharathee': 'female',
-  'microsoft sarawut': 'male',
-  'microsoft somchai': 'male',
-  'microsoft narong': 'male',
-  'microsoft niwat': 'male',
-  // Google / Chrome voices — Female
-  'google 普通话': 'female',
-  'google 粤语': 'female',
-  'google 國語': 'female',
-  'google thai': 'female',
-  'google indonesian': 'female',
-  'google vietnamese': 'female',
-  // Google / Chrome voices — Male
+  'microsoft xiaoyi': 'female',
+  // === Microsoft Windows Chinese (Mandarin) — Male ===
+  'microsoft kangkang': 'male', 'kangkang': 'male',
+  'microsoft yunyang': 'male', 'yunyang': 'male',
+  'microsoft yunjian': 'male', 'yunjian': 'male',
+  'microsoft yunxi': 'male', 'yunxi': 'male',
+  'microsoft yunye': 'male', 'yunye': 'male',
+  'microsoft yunfeng': 'male', 'yunfeng': 'male',
+  'microsoft yunhao': 'male', 'yunhao': 'male',
+  'microsoft yunxia': 'male', 'yunxia': 'male',
+  'microsoft yunze': 'male', 'yunze': 'male',
+  // === Microsoft Windows Chinese (Cantonese) — Female ===
+  'microsoft hiugaai': 'female', 'hiugaai': 'female',
+  'microsoft hiumaan': 'female', 'hiumaan': 'female',
+  // === Microsoft Windows Chinese (Cantonese) — Male ===
+  'microsoft wanlung': 'male', 'wanlung': 'male',
+  // === Microsoft Windows Chinese (Taiwan) — Female ===
+  'microsoft hsiaochen': 'female', 'hsiaochen': 'female',
+  // === Microsoft Windows Chinese (Taiwan) — Male ===
+  'microsoft yunjhe': 'male', 'yunjhe': 'male',
+  'microsoft hsiaoyu': 'male', 'hsiaoyu': 'male',
+  // === Thai voices ===
+  'microsoft premwadee': 'female', 'microsoft achara': 'female',
+  'microsoft kanya': 'female', 'microsoft tharathee': 'female',
+  'microsoft sarawut': 'male', 'microsoft somchai': 'male',
+  'microsoft narong': 'male', 'microsoft niwat': 'male',
+  // === Google / Chrome voices ===
   'google 普通话男': 'male',
+  'google 普通话': 'female', 'google 粤语': 'female', 'google 國語': 'female',
+  'google thai': 'female', 'google indonesian': 'female', 'google vietnamese': 'female',
 };
 
-// Keyword-based gender hints (substring match on lowercase name)
-const FEMALE_NAMES = ['female','woman','girl','หญิง','女','hui','huihui','hanhan','yaoyao','xiaoxiao','tharathee','achara','prem','premwadee','kanya','lisa','sarah','emma','samantha','catherine','linda','mary','zira','marka','martha','eva','เปรม','อัจฉรา','กัญญา','ธราธี','hoaimy','gadis','nueng','darina','natcha','hsiao-chen','ting-ting','mei-jia','hanhan'];
-const MALE_NAMES = ['male','man','boy','ชาย','男','kangkang','yunyang','yunjian','yunxi','yunye','yunfeng','yunhao','yunxia','yunze','sarawut','somchai','narong','david','james','mike','john','mark','george','paul','richard','นิวัฒน์','สมชาย','ณรงค์','namminh','ardi','budhi','wibowo','chih-wei','chih-hung'];
+// Language-specific name keywords ONLY (NO generic English words like "man"/"male"/"female"
+// — those cause false matches: "man" in "mandarin", "male" in "female", etc.)
+const FEMALE_NAMES = ['huihui','xiaoxiao','yaoyao','hanhan','xiaobei','xiaoni','xiaoyi','xiaohan','hsiaochen',
+  'hiugaai','hiumaan','tharathee','achara','premwadee','kanya','เปรม','อัจฉรา','กัญญา','ธราธี',
+  'lisa','sarah','emma','samantha','catherine','linda','mary','zira','martha','eva',
+  'hoaimy','gadis','nueng','darina','natcha','rosa','susan','nancy','betty','donna','judy','patricia'];
+const MALE_NAMES = ['kangkang','yunyang','yunjian','yunxi','yunye','yunfeng','yunhao','yunxia','yunze',
+  'wanlung','yunjhe','hsiaoyu','sarawut','somchai','narong','นิวัฒน์','สมชาย','ณรงค์',
+  'david','james','mike','john','george','paul','richard','robert','william','thomas','charles','steven',
+  'namminh','ardi','budhi','wibowo','mark','frank','henry','peter','andrew','brian'];
 
 function detectGender(name) {
   const nl = name.toLowerCase();
