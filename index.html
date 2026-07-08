@@ -817,17 +817,21 @@ function generateSpeech() {
 
   // ---- Premium path: Google Cloud TTS ----
   if (isMember() && selectedVoice && selectedVoice._source === 'google') {
+    console.log('🎯 GOOGLE CLOUD TTS PATH — voice:', selectedVoice.name, 'lang:', currentLang);
     var url = 'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + GCLOUD_API_KEY;
     var body = JSON.stringify({
       input: { text: text },
       voice: { languageCode: currentLang, name: selectedVoice.name },
       audioConfig: { audioEncoding: 'MP3', speakingRate: parseFloat(document.getElementById('speed-slider').value) }
     });
+    console.log('📤 Sending to Google Cloud TTS...');
     fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body })
-      .then(function(r) { return r.json(); })
+      .then(function(r) { console.log('📥 Response status:', r.status); return r.json(); })
       .then(function(data) {
         btn.classList.remove('loading'); btn.disabled = false;
+        console.log('📦 Response data keys:', Object.keys(data));
         if (data.audioContent) {
+          console.log('✅ Got audioContent, length:', data.audioContent.length);
           var audioBytes = Uint8Array.from(atob(data.audioContent), function(c) { return c.charCodeAt(0); });
           var blob = new Blob([audioBytes], { type: 'audio/mp3' });
           var audioEl = document.getElementById('audio-el');
@@ -838,15 +842,18 @@ function generateSpeech() {
           localStorage.setItem('vt_chars', dailyChars.toString());
           showToast('🤖 AI เสียงคุณภาพสูง — Google Cloud');
         } else {
+          console.error('❌ Google TTS error:', JSON.stringify(data.error || data));
           showToast('⚠️ ' + (data.error ? data.error.message : 'Unknown error'));
         }
       })
       .catch(function(err) {
         btn.classList.remove('loading'); btn.disabled = false;
+        console.error('❌ Network error:', err.message);
         showToast('⚠️ Network error — ' + err.message);
       });
     return;
   }
+  console.log('🔊 BROWSER TTS PATH — voice:', selectedVoice ? selectedVoice.name : 'none', '_source:', selectedVoice ? selectedVoice._source : 'null');
 
   // ---- Free path: Browser SpeechSynthesis ----
   speechSynthesis.cancel();
