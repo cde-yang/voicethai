@@ -409,7 +409,7 @@ body {
   <footer class="footer">
     <p>🎙️ <strong>VoiceThai</strong> — แปลงข้อความเป็นเสียง ฟรี ไม่ต้องสมัคร</p>
     <p>รองรับภาษาไทย · จีน · อังกฤษ · เวียดนาม · อินโดนีเซีย</p>
-    <p style="margin-top:6px;">© 2026 VoiceThai · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Service</a> · <a href="refund.html">Refund Policy</a></p>
+    <p style="margin-top:6px;">© 2026 VoiceThai · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="support.html">Support</a></p>
   </footer>
 </div>
 
@@ -1079,6 +1079,7 @@ function downloadMP3() {
 
 // ============ UPGRADE TRACKING ============
 function trackUpgrade(tier) {
+  // Track the click
   var key = 'vt_upgrade_clicks';
   var data = JSON.parse(localStorage.getItem(key)||'{}');
   if (!data[tier]) data[tier] = { clicks: 0, last: null };
@@ -1086,7 +1087,8 @@ function trackUpgrade(tier) {
   data[tier].last = new Date().toISOString();
   data.total = (data.pro?.clicks||0) + (data.max?.clicks||0);
   localStorage.setItem(key, JSON.stringify(data));
-  alert('🛠 ระบบชำระเงินกำลังจะเปิดให้บริการเร็วๆ นี้\n\nมีคนสนใจ '+(data.total)+' ครั้งแล้ว!\n\nสนใจติดต่อ: voicethai@proton.me\n\nPayment coming soon — '+data.total+' interested so far!');
+  // Redirect to payment page with plan pre-selected
+  window.location.href = 'payment.html?plan=' + tier;
 }
 // Add ?admin to URL to see stats
 if (window.location.search.includes('admin')) {
