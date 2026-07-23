@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upgrade to Premium — VoiceThai</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root { --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --sub: #86868b; --accent: #0071e3; --accent-hover: #0077ed; --accent-light: #e8f2fd; --gold: #ff9f0a; --border: #d2d2d7; --radius: 20px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
+.logo { font-size: 22px; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #5856d6, #0071e3); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.hero { text-align: center; margin-bottom: 32px; }
+h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+.hero p { font-size: 17px; color: var(--sub); max-width: 500px; margin: 0 auto; }
+.tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.tier-card { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 36px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,.06); }
+.tier-card.pro { border-color: var(--accent); position: relative; }
+.tier-card .popular { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 6px 18px; border-radius: 16px; font-size: 12px; font-weight: 600; }
+.tier-card h2 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.tier-card .price { font-size: 48px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
+.tier-card .price small { font-size: 16px; color: var(--sub); font-weight: 400; }
+.tier-card .sub-price { font-size: 14px; color: var(--sub); margin-bottom: 16px; }
+.tier-card ul { text-align: left; margin-bottom: 24px; list-style: none; }
+.tier-card ul li { padding: 8px 0; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.tier-card ul li .check { color: var(--gold); font-weight: 700; }
+.btn-upgrade { display: block; width: 100%; padding: 16px; border-radius: 100px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; border: none; transition: all 0.2s; text-decoration: none; text-align: center; }
+.btn-pro { background: var(--accent); color: white; }
+.btn-pro:hover { background: var(--accent-hover); box-shadow: 0 4px 20px rgba(0,113,227,.3); }
+.btn-max { background: var(--text); color: white; }
+.btn-max:hover { background: #333; box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+.secure-badge { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 12px; color: var(--sub); }
+.faq-section { margin-top: 48px; }
+.faq-section h2 { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 20px; }
+details { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; cursor: pointer; margin-bottom: 8px; }
+summary { font-weight: 600; font-size: 14px; }
+details p { margin-top: 10px; font-size: 13px; color: var(--sub); }
+.footer { text-align: center; padding: 40px 0 20px; font-size: 12px; color: var(--sub); }
+.footer a { color: var(--accent); text-decoration: none; }
+@media (max-width: 600px) { h1 { font-size: 26px; } .tier-card { padding: 24px; } .price { font-size: 36px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <a href="/" class="logo"><div class="logo-icon">🎙️</div>VoiceThai</a>
+    <a href="/" style="font-size:13px;color:var(--sub);">← Back to Home</a>
+  </div>
+
+  <div class="hero">
+    <h1>Upgrade to Premium</h1>
+    <p>Unlock AI-powered HD voices, MP3 downloads, and commercial usage rights.</p>
+  </div>
+
+  <!-- PLANS -->
+  <div class="tier-grid" id="tier-grid">
+    <!-- Free -->
+    <div class="tier-card">
+      <h2>🆓 Free</h2>
+      <div class="price">฿0</div>
+      <div class="sub-price">Forever free</div>
+      <ul>
+        <li><span class="check">✅</span> 2,000 chars/day</li>
+        <li><span class="check">✅</span> Browser voices</li>
+        <li><span class="check">✅</span> 5 languages</li>
+        <li><span class="check">✅</span> No registration</li>
+        <li style="color:#9ca3af;">❌ MP3 download</li>
+        <li style="color:#9ca3af;">❌ AI HD voices</li>
+      </ul>
+      <a href="/" class="btn-upgrade" style="border: 2px solid var(--accent); color: var(--accent); background: white;">Current Plan</a>
+    </div>
+
+    <!-- Pro -->
+    <div class="tier-card pro">
+      <span class="popular">⭐ Most Popular</span>
+      <h2>👑 Pro</h2>
+      <div class="price">฿99<small>/mo</small></div>
+      <div class="sub-price">≈ $2.75 USD · ≈ ¥20 RMB</div>
+      <ul>
+        <li><span class="check">✅</span> <strong>5,000 chars/day</strong></li>
+        <li><span class="check">✅</span> 20+ AI HD voices</li>
+        <li><span class="check">✅</span> Unlimited MP3 download</li>
+        <li><span class="check">✅</span> Natural human-like voice</li>
+        <li><span class="check">✅</span> Commercial use allowed</li>
+      </ul>
+      <!-- REPLACE WITH YOUR STRIPE PAYMENT LINK -->
+      <a href="https://buy.stripe.com/YOUR_PRO_LINK" class="btn-upgrade btn-pro" id="btn-pro">
+        Subscribe Pro — ฿99/month
+      </a>
+      <div class="secure-badge">🔒 Secured by Stripe · Cancel anytime</div>
+    </div>
+
+    <!-- Max -->
+    <div class="tier-card">
+      <h2>🚀 Max</h2>
+      <div class="price">฿179<small>/mo</small></div>
+      <div class="sub-price">≈ $5 USD · ≈ ¥37 RMB</div>
+      <ul>
+        <li><span class="check">✅</span> <strong>10,000 chars/day</strong></li>
+        <li><span class="check">✅</span> 50+ AI HD voices</li>
+        <li><span class="check">✅</span> Unlimited MP3 download</li>
+        <li><span class="check">✅</span> Natural human-like voice</li>
+        <li><span class="check">✅</span> Fastest processing</li>
+      </ul>
+      <!-- REPLACE WITH YOUR STRIPE PAYMENT LINK -->
+      <a href="https://buy.stripe.com/YOUR_MAX_LINK" class="btn-upgrade btn-max" id="btn-max">
+        Subscribe Max — ฿179/month
+      </a>
+      <div class="secure-badge">🔒 Secured by Stripe · Cancel anytime</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2>💳 Payment FAQ</h2>
+    <details><summary>What payment methods do you accept?</summary><p>We accept all major credit and debit cards (Visa, Mastercard, American Express) through Stripe. Some regions also support local payment methods like Alipay, WeChat Pay, and PromptPay.</p></details>
+    <details><summary>Can I cancel anytime?</summary><p>Yes! Cancel at any time. Your subscription remains active until the end of your current billing period. No long-term contracts.</p></details>
+    <details><summary>Is there a refund policy?</summary><p>Yes. We offer a 7-day money-back guarantee. If you're not satisfied, email voicethai@proton.me and we'll refund your payment in full. See our <a href="refund.html">Refund Policy</a> for details.</p></details>
+    <details><summary>How do I manage my subscription?</summary><p>After subscribing, you'll receive an email with a link to the Stripe Customer Portal where you can update payment methods, view invoices, or cancel your subscription.</p></details>
+    <details><summary>Is my payment information secure?</summary><p>Absolutely. We never see or store your credit card details. All payment processing is handled securely by Stripe, a PCI DSS Level 1 certified payment processor.</p></details>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 VoiceThai · <a href="/">Home</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="support.html">Support</a></p>
+    <p style="margin-top:4px;">Payments processed securely by Stripe</p>
+  </div>
+</div>
+
+<!-- Counter for upgrade interest -->
+<script>
+// Track upgrade interest (carried over from main site)
+var key = 'vt_upgrade_clicks';
+var data = JSON.parse(localStorage.getItem(key)||'{}');
+if (!data.total) data.total = (data.pro?.clicks||0) + (data.max?.clicks||0);
+if (data.total > 0) {
+  var el = document.createElement('p');
+  el.style.cssText = 'text-align:center;font-size:12px;color:var(--sub);margin-top:8px;';
+  el.textContent = '🔥 ' + data.total + ' people have shown interest in upgrading';
+  document.querySelector('.hero').appendChild(el);
+}
+</script>
+</body>
+</html>
