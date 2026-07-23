@@ -88,8 +88,8 @@ details p { margin-top: 10px; font-size: 13px; color: var(--sub); }
         <li><span class="check">✅</span> Natural human-like voice</li>
         <li><span class="check">✅</span> Commercial use allowed</li>
       </ul>
-      <!-- REPLACE WITH YOUR STRIPE PAYMENT LINK -->
-      <a href="https://buy.stripe.com/YOUR_PRO_LINK" class="btn-upgrade btn-pro" id="btn-pro">
+      <!-- SET YOUR STRIPE PAYMENT LINK HERE -->
+      <a href="javascript:void(0)" onclick="handlePayment('pro')" class="btn-upgrade btn-pro" id="btn-pro">
         Subscribe Pro — ฿99/month
       </a>
       <div class="secure-badge">🔒 Secured by Stripe · Cancel anytime</div>
@@ -107,8 +107,8 @@ details p { margin-top: 10px; font-size: 13px; color: var(--sub); }
         <li><span class="check">✅</span> Natural human-like voice</li>
         <li><span class="check">✅</span> Fastest processing</li>
       </ul>
-      <!-- REPLACE WITH YOUR STRIPE PAYMENT LINK -->
-      <a href="https://buy.stripe.com/YOUR_MAX_LINK" class="btn-upgrade btn-max" id="btn-max">
+      <!-- SET YOUR STRIPE PAYMENT LINK HERE -->
+      <a href="javascript:void(0)" onclick="handlePayment('max')" class="btn-upgrade btn-max" id="btn-max">
         Subscribe Max — ฿179/month
       </a>
       <div class="secure-badge">🔒 Secured by Stripe · Cancel anytime</div>
@@ -131,8 +131,47 @@ details p { margin-top: 10px; font-size: 13px; color: var(--sub); }
   </div>
 </div>
 
-<!-- Counter for upgrade interest -->
+<!-- Overlay for pre-Stripe setup -->
+<div id="payment-overlay" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:20px;padding:40px;max-width:440px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="font-size:48px;margin-bottom:16px;">🏗️</div>
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;" id="pay-modal-title">Payment Coming Soon</h3>
+    <p style="font-size:13px;color:var(--sub);margin-bottom:16px;" id="pay-modal-desc">
+      Our Stripe payment system is being set up. In the meantime, you can subscribe directly via email.
+    </p>
+    <p style="font-size:14px;font-weight:600;margin-bottom:4px;" id="pay-modal-plan"></p>
+    <p style="font-size:12px;color:var(--sub);margin-bottom:20px;">
+      Email: <a href="mailto:voicethai@proton.me" style="font-weight:600;">voicethai@proton.me</a><br>
+      Subject: "Subscribe [Pro/Max]"
+    </p>
+    <button onclick="document.getElementById('payment-overlay').style.display='none'" style="padding:12px 32px;border-radius:24px;border:none;background:var(--accent);color:white;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">OK</button>
+  </div>
+</div>
+
 <script>
+// Configure this when Stripe is set up:
+// STRIPE_LINKS = { pro: 'https://buy.stripe.com/XXXX', max: 'https://buy.stripe.com/YYYY' };
+var STRIPE_LINKS = null; // ← Replace with real links after Stripe setup
+
+function handlePayment(plan) {
+  // If Stripe is configured, redirect to Stripe Checkout
+  if (STRIPE_LINKS && STRIPE_LINKS[plan]) {
+    window.location.href = STRIPE_LINKS[plan];
+    return;
+  }
+  // Otherwise show manual subscription modal
+  var overlay = document.getElementById('payment-overlay');
+  document.getElementById('pay-modal-plan').textContent = plan === 'pro' ? 'Pro Plan — ฿99/month' : 'Max Plan — ฿179/month';
+  overlay.style.display = 'flex';
+  // Track click
+  var key = 'vt_upgrade_clicks';
+  var data = JSON.parse(localStorage.getItem(key)||'{}');
+  if (!data[plan]) data[plan] = { clicks: 0 };
+  data[plan].clicks++;
+  data.total = (data.pro?.clicks||0) + (data.max?.clicks||0);
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
 // Track upgrade interest (carried over from main site)
 var key = 'vt_upgrade_clicks';
 var data = JSON.parse(localStorage.getItem(key)||'{}');
