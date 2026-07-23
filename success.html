@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Successful — VoiceThai</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root { --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --sub: #86868b; --accent: #0071e3; --radius: 20px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+.container { max-width: 520px; margin: 0 auto; padding: 40px 20px; text-align: center; }
+.card { background: var(--card); border-radius: var(--radius); padding: 48px 40px; box-shadow: 0 4px 20px rgba(0,0,0,.06); }
+.check-icon { width: 72px; height: 72px; border-radius: 50%; background: #e8f5e9; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 36px; }
+h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+p { font-size: 15px; color: var(--sub); margin-bottom: 16px; }
+.btn { display: inline-block; padding: 14px 32px; border-radius: 100px; font-size: 16px; font-weight: 600; font-family: inherit; border: none; cursor: pointer; text-decoration: none; transition: all 0.2s; margin: 8px; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #0077ed; box-shadow: 0 4px 20px rgba(0,113,227,.3); }
+.btn-secondary { background: var(--text); color: white; }
+.btn-secondary:hover { background: #333; }
+.steps { text-align: left; margin: 24px 0; }
+.steps .step { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #e5e5e5; }
+.steps .step:last-child { border-bottom: none; }
+.steps .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.steps .step p { margin-bottom: 0; font-size: 14px; }
+.steps .step p strong { color: var(--text); }
+.footer { font-size: 12px; color: var(--sub); margin-top: 24px; }
+.footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <div class="check-icon">✅</div>
+    <h1>Payment Successful!</h1>
+    <p>Thank you for upgrading to VoiceThai Premium. Your account is being activated.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <p><strong>Check your email</strong><br>You'll receive a confirmation email from Stripe with your receipt and a link to manage your subscription.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p><strong>Activate Premium</strong><br><button onclick="activatePremium()" class="btn btn-primary" style="margin-top:8px;">🔓 Activate Premium Now</button></p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p><strong>Start using AI voices</strong><br>Go back to VoiceThai and enjoy HD AI voices, MP3 downloads, and higher daily limits.</p>
+      </div>
+    </div>
+
+    <div id="activation-msg" style="display:none; margin-top:16px; padding:12px 16px; background:#e8f5e9; border-radius:12px; font-size:13px; color:#1b873b; font-weight:600;">
+      ✅ Premium activated! Redirecting to VoiceThai...
+    </div>
+
+    <div style="margin-top:20px;">
+      <a href="/" class="btn btn-secondary">🎙️ Go to VoiceThai</a>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Questions? <a href="mailto:voicethai@proton.me">voicethai@proton.me</a> · <a href="support.html">Support</a></p>
+  </div>
+</div>
+
+<script>
+function activatePremium() {
+  localStorage.setItem('vt_member', 'true');
+  document.getElementById('activation-msg').style.display = 'block';
+  setTimeout(function() {
+    window.location.href = '/';
+  }, 2000);
+}
+</script>
+</body>
+</html>
